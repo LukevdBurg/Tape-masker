@@ -8,16 +8,17 @@ def scanner():
     iterator = lidar.iter_scans()
     for i in range (0,5):
         scan += next(iterator)
-    return scan 
+    lidar.stop()
+    lidar.stop_motor()
+    lidar.disconnect()
+    return scan
 
 def find_circle():
     measurements = np.array(scanner())
     distances = measurements[:,2]
     meandistance = np.mean(distances)
     maxdistance = np.max(distances)
-    lidar.stop()
-    lidar.stop_motor()
-    lidar.disconnect()
+
     print(meandistance,maxdistance)
     if meandistance < 900 and meandistance > 600 and maxdistance <1400:
         return True
@@ -36,9 +37,6 @@ def find_middle():
         angle = angles[minimumindex] + 180
     xdist = np.sin(np.radians(angle)) * (meandistance-measurements[minimumindex,2])
     zdist = np.cos(np.radians(angle)) * (meandistance-measurements[minimumindex,2])
-    lidar.stop()
-    lidar.stop_motor()
-    lidar.disconnect()
     return round(xdist, 2), round(zdist,2)
 
 def run():
@@ -59,6 +57,3 @@ def run():
     newvane = np.array(newvane)
     minimumindextwo = np.argmin(newvane[:,2])
     print(newvane[minimumindextwo])
-    lidar.stop()
-    lidar.stop_motor()
-    lidar.disconnect()
