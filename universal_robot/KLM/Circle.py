@@ -27,7 +27,8 @@ def calibrateCenter():
     # Calibrate to the center of the rotor
     print("Calibrating Center!")
     # Rotate EOAT 90 degrees for LIDAR
-    rob.movel([-0.2, -0.2, 0.8, -1.21, 1.21, -1.21], acc=a, vel=v/2)
+    pose = rob.getl()
+    rob.movel([pose[0], pose[1], pose[2], -1.21, 1.21, -1.21], acc=a, vel=v/2)
     pose = rob.getl() 
     lidarCheck = False
     
@@ -95,7 +96,7 @@ def tapeMovement():
     # Taping movement
     # TODO REMOVE SLEEPS!
     print("Tape movement!")
-    deltaHorizontal = 0.12 #Forward distance
+    deltaHorizontal = 0.14 #Forward distance
     deltaVertical = 0.015 #Pushing down distance
     ogvAngle = np.deg2rad(12) #Horizontal angle of the OGV's
     
@@ -103,16 +104,22 @@ def tapeMovement():
     correctionX, correctionZ = lidar.find_vane()
     print("X = ",correctionX, "\nZ = ", correctionZ)
     time.sleep(3)
-    correctionX -= 0.0337 #0.0225  # offset of lidar
-    correctionZ -= 0.1825 + 0.02 # offset of lidar - clearance
+#    correctionX = -correctionX
+    correctionX -= 0.025 #0.0225  # offset of lidar
+    correctionZ -= (0.1825  + 0.02)  #-0.25 offset of lidar - dist EOAT + clearance
+    print("X = ",correctionX, "\nZ = ", correctionZ)
+   
     rob.translate_tool((correctionX, 0, correctionZ), acc=a, vel=v)
     
     #Rotate the EOAT horizontal in line with the OGV's
     time.sleep(3)
+    rotateDistance = math.tan(np.deg2rad(12)) * 0.258 #0.252 + distEOAT + clearance 
+    rob.translate_tool((rotateDistance, 0, 0), acc=a, vel=v) 
+
     t = rob.get_pose()
     t.orient.rotate_yt(-ogvAngle)
     rob.set_pose(t, vel=v, acc=a)
-        
+
     # Go forward, Down, Up, and Back
     time.sleep(2)
     rob.translate_tool((0, 0, deltaHorizontal), acc=a, vel=v)
@@ -143,6 +150,7 @@ if __name__ == "__main__":
 #
 #    x, z = lidar.find_vane()
 #    print("X = ",x, "\nZ = ", z)
+    
 #    startup() #Joint move in middle of joint limits UR10
 #    calibrateCenter()  #Get center with LIDAR
     
