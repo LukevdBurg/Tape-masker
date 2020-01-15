@@ -67,5 +67,3 @@ def find_vane():
     else:
         distancetocenter = distfromfirstvane - meandistance
     return distancetocenter, meantraveldist
-
-print(scanner())
