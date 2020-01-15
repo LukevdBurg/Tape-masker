@@ -1,6 +1,8 @@
 '''looks to find the circle, returning true or false'''
 from rplidar import RPLidar
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
 def scanner():
     scan = []
@@ -37,7 +39,7 @@ def find_middle():
         angle = angles[minimumindex] + 180
     xdist = np.sin(np.radians(angle)) * (meandistance-measurements[minimumindex,2])
     zdist = np.cos(np.radians(angle)) * (meandistance-measurements[minimumindex,2])
-    return round(xdist, 2), round(zdist,2)
+    return round(xdist, 2)/1000, round(zdist,2)/1000
 
 def find_vane():
     scan = scanner()
@@ -66,4 +68,4 @@ def find_vane():
         distancetocenter = meandistance - distfromfirstvane
     else:
         distancetocenter = distfromfirstvane - meandistance
-    return distancetocenter, meantraveldist
+    return round(distancetocenter, 2)/1000, round(meantraveldist, 2)/1000
