@@ -14,51 +14,52 @@ import urx
 
 
 class MyRobot(urx.Robot):
-    #TODO Make it optional to start with the safe pose
-    def __init__(self, host, port):
+    # TODO Make it optional to start with the safe pose
+    def __init__(self, host, port, safe_start):
         super().__init__(host)
         self.mylidar = lidar.MyRPLidar(port)
         self.safe_pos = ([0.283, -0.416, -2.305, 1.152, 1.571, -0.283])
         self.acc = 0.3
         self.vel = 0.1
-        #self.startup()
+        if safe_start:
+            self.on_startup()
 
-    def startup(self):
+    def on_startup(self):
         # Start position with all joints within limits
         print("Going to startup pose! \n")
-        self.movej(self.safe_pos, acc=a, vel=v)
+        self.movej(self.safe_pos, acc=self.acc, vel=self.vel)
 
-    def calibrateCenter(self):
+    def calibrate_to_center(self):
         # Calibrate to the center of the rotor
         print("Calibrating Center!")
         # Rotate EOAT 90 degrees for LIDAR
         pose = self.getl()
         self.movel([pose[0], pose[1], pose[2], -1.21, 1.21, -1.21], acc=a, vel=v / 2)
         pose = self.getl()
-        lidarCheck = False
+        lidar_check = False
 
         # Move 50mm forward till LIDAR is within motor.
         for i in range(20):
             #        if i == 5: lidarCheck = True
-            lidarCheck = self.mylidar.find_circle()
-            if (lidarCheck == True): break
+            lidar_check = self.mylidar.find_circle()
+            if lidar_check: break
             pose[2] += 0.05
-            self.movel(pose, acc=a / 2, vel=v)
+            self.movel(pose, acc=self.acc / 2, vel=self.vel)
 
         # Move LIDAR to center of motor
-        deltaX, deltaY = lidar.find_middle()
-        pose[0] += deltaX
-        pose[1] += deltaY
-        self.movel(pose, acc=a, vel=v)
+        delta_x, delta_y = self.mylidar.find_middle()
+        pose[0] += delta_x
+        pose[1] += delta_y
+        self.movel(pose, acc=self.acc, vel=self.vel)
 
         # Second measurement with the lidar to check.
-        deltaX, deltaY = lidar.find_middle()
-        pose[0] += deltaX  # deltaX + offset of lidar
-        pose[1] += deltaY  # deltaY + offset of lidar
+        delta_x, delta_y = self.mylidar.find_middle()
+        pose[0] += delta_x  # deltaX + offset of lidar
+        pose[1] += delta_y  # deltaY + offset of lidar
 
-        # rotate so that tip EOAT is in LIDAR pose
+        # Rotate so that tip EOAT is in LIDAR pose
         pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
-        self.movel(pose, acc=a, vel=v)
+        self.movel(pose, acc=self.acc , vel=self.vel)
         print("Done calibrating center! \n")
 
     def tapeStation(self):
@@ -74,7 +75,7 @@ class MyRobot(urx.Robot):
         forwardTapePose = [-0.135, 0.03, 0.912, 1.16, 1.322, -1.146]  # move forward and flatten
 
         # Movements
-        self.moveToMiddle()  # Go to middle of motor at start and end
+        self.move_to_middle()  # Go to middle of motor at start and end
         self.movej(stationJPose, acc=a, vel=v * 2)
         self.movel(grabTapePose, acc=a, vel=v)
         #    closeGripper()
@@ -87,19 +88,19 @@ class MyRobot(urx.Robot):
         time.sleep(1.5)  # Remove when servo connected
 
         #    rob.movel(middleStatorPose, acc=a, vel=v)
-        self.moveToMiddle()  # Go to middle of motor at start and end
+        self.move_to_middle()  # Go to middle of motor at start and end
         print("Tapestation done \n")
 
-    def moveToMiddle(self):
+    def move_to_middle(self):
         # Simple function to go to middle of rotor everytime
         self.movej(middleStatorJPose, acc=a, vel=v * 2)
 
-    def tapeMovement(self):
+    def tape_movement(self):
         # Taping movement
         # TODO REMOVE SLEEPS!
         # print("Tape movement!")
-        deltaHorizontal = 0.02  # Forward distance
-        deltaVertical = 0.00  # Pushing down distance
+        d_horizontal = 0.02  # Forward distance
+        d_vertical = 0.00  # Pushing down distance
         ogvAngle = np.deg2rad(8)  # Horizontal angle of the OGV's
 
         pose = self.getl()
@@ -126,19 +127,19 @@ class MyRobot(urx.Robot):
 
         # Go forward, Down, Up, and Back
         time.sleep(2)
-        self.translate_tool((0, 0, deltaHorizontal), acc=a, vel=v)
+        self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
         time.sleep(2)
-        self.translate_tool((0, deltaVertical, 0), acc=a, vel=v)
+        self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
         time.sleep(2)
-        self.translate_tool((0, -deltaVertical, 0), acc=a, vel=v)
-        self.translate_tool((0, 0, -deltaHorizontal), acc=a, vel=v)
+        self.translate_tool((0, -d_vertical, 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
 
         # Rotate EOAT back
         t = self.get_pose()
         t.orient.rotate_yt(ogvAngle)
-        self.set_pose(t, vel=v, acc=a)
+        self.set_pose(t, vel=self.vel, acc=self.acc)
 
-        self.movel([pose[0], pose[1], pose[2], pose[3], pose[4], pose[5]], acc=a, vel=v / 2)
+        self.movel([pose[0], pose[1], pose[2], pose[3], pose[4], pose[5]], acc=self.acc, vel=self.vel / 2)
 
         # print("Tape movement done! \n")
         return correctionX, correctionZ
@@ -147,12 +148,8 @@ class MyRobot(urx.Robot):
 if __name__ == "__main__":
     # Configure Robot
     logging.basicConfig(level=logging.WARN)
-    # rob = urx.Robot("192.168.1.102", True)
-
     myrobot = MyRobot("192.168.1.102", 'COM3')
 
-    v = 0.1
-    a = 0.3
     diameter = 1.015 + 0.1  # + 0.1 for clearance
     radius = diameter / 2
     invert = False
@@ -172,7 +169,7 @@ if __name__ == "__main__":
 
     try:
         for i in range(0, 5):
-            print(i, ": ", myrobot.tapeMovement())
+            print(i, ": ", myrobot.tape_movement())
         '''
         i = 0 #2 # Start at 3nd OGV because woodenbeam
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
