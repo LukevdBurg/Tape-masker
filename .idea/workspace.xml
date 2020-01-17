@@ -28,7 +28,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.test vane">
+  <component name="RunManager" selected="Python.Biomech Practicum 2">
     <configuration name="Biomech Practicum 2" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Tape-masker" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -136,10 +136,10 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.test vane" />
         <item itemvalue="Python.Biomech Practicum 2" />
-        <item itemvalue="Python.lidar" />
+        <item itemvalue="Python.test vane" />
         <item itemvalue="Python.Circle" />
+        <item itemvalue="Python.lidar" />
         <item itemvalue="Python.GUI-Resize" />
       </list>
     </recent_temporary>

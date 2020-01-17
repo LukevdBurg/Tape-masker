@@ -11,15 +11,17 @@ from rplidar import RPLidar
 
 
 class MyRPLidar(RPLidar):
+    def __init__(self, port):
+        super().__init__(port)
+        self.scan = []
 
     def scanner(self):
-        self.scan = []
         iterator = self.iter_scans()
         for i in range(0, 5):
             self.scan += next(iterator)
         self.stop()
         self.stop_motor()
-        self.disconnect()
+        #self.disconnect()
         return self.scan
 
     def find_circle(self):
@@ -48,7 +50,6 @@ class MyRPLidar(RPLidar):
         zdist = (np.cos(np.radians(angle)) * (meandistance - measurements[minimumindex, 2])) / 1000
         return round(xdist, 2), round(zdist, 2)
 
-
     def find_vane(self):
         scan = self.scanner()
         vane = []
@@ -76,16 +77,12 @@ class MyRPLidar(RPLidar):
         meantraveldist = (abs(traveldist) + abs(traveldistsecond)) / 2
         distancetocenter = (distfromsecondvane + distfromfirstvane) / 2
 
-    #    if firstvane[1] < secondvane[1]:
-    #        distancetocenter = meandistance - distfromfirstvane
-    #    else:
-    #        distancetocenter = distfromfirstvane - meandistance
+        #    if firstvane[1] < secondvane[1]:
+        #        distancetocenter = meandistance - distfromfirstvane
+        #    else:
+        #        distancetocenter = distfromfirstvane - meandistance
 
         distancetocenter = distancetocenter / 1000
         meantraveldist = meantraveldist / 1000
 
         return distancetocenter, meantraveldist
-
-
-if __name__ == "__main__":
-    mylidar = MyRPLidar('COM3')

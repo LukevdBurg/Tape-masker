@@ -48,6 +48,7 @@ def run():
     vane = np.array(vane)
     minimumindex = np.argmin(vane[:,2])
     firstvane = vane[minimumindex]
+
     print(firstvane)
     newvanes = []
     for row in vane:
