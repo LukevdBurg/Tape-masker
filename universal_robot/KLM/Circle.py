@@ -34,7 +34,7 @@ class MyRobot(urx.Robot):
         print("Calibrating Center!")
         # Rotate EOAT 90 degrees for LIDAR
         pose = self.getl()
-        self.movel([pose[0], pose[1], pose[2], -1.21, 1.21, -1.21], acc=a, vel=v / 2)
+        self.movel([pose[0], pose[1], pose[2], -1.21, 1.21, -1.21], acc=self.acc, vel=self.vel / 2)
         pose = self.getl()
         lidar_check = False
 
@@ -114,16 +114,16 @@ class MyRobot(urx.Robot):
         correctionZ -= (0.1825 + 0.02)  # -0.25 offset of lidar - dist EOAT + clearance
         # print("X = ", correctionX, "\nZ = ", correctionZ)
 
-        self.translate_tool((correctionX, 0, correctionZ), acc=a, vel=v)
+        self.translate_tool((correctionX, 0, correctionZ), acc=self.acc, vel=self.vel)
 
         # Rotate the EOAT horizontal in line with the OGV's
         time.sleep(3)
         rotateDistance = math.tan(np.deg2rad(12)) * 0.258  # 0.252 + distEOAT + clearance
-        self.translate_tool((rotateDistance, 0, 0), acc=a, vel=v)
+        self.translate_tool((rotateDistance, 0, 0), acc=self.acc, vel=self.vel)
 
         t = self.get_pose()
         t.orient.rotate_yt(-ogvAngle)
-        self.set_pose(t, vel=v, acc=a)
+        self.set_pose(t, vel=self.vel, acc=self.acc)
 
         # Go forward, Down, Up, and Back
         time.sleep(2)
