@@ -20,6 +20,8 @@ def run(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distan
     mylidar_scan = []
     angle_L = 0
     angle_R = 0
+    dist_L = 0
+    dist_R = 0
 
     for y in range(0, 15):
 
