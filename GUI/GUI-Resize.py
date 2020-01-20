@@ -3,8 +3,10 @@ from tkinter import *
 from tkinter.font import Font
 from PIL import Image, ImageTk
 
+from Circle import MyRobot
 
-class MyApp:
+
+class MyApp():
     def __init__(self, parent):
         # ---Font constants---
         mytitleFont = Font(family="Arial", size=16, weight="bold")
@@ -149,12 +151,14 @@ class MyApp:
         Label(self.footer_frame, text="", pady=20, background="#00A1E4").grid(column=0, row=0, sticky='EWNS')
 
     def buttonstartclick(self):
+        self.myrobot = MyRobot("192.168.1.102", 'COM3', False)
         self.start_button.configure(state="disabled")
 
     def buttonstartclick_a(self):
         self.buttonstartclick()
 
     def buttonstopclick(self):
+        self.myrobot.__del__()
         self.start_button.configure(state="normal")
 
     def buttonstopclick_a(self):
@@ -168,5 +172,5 @@ class MyApp:
 
 
 root = Tk()
-myapp = MyApp(root)
+myapp = MyApp(root) #, "192.168.1.102", 'COM3', False)
 root.mainloop()
