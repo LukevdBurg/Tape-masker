@@ -18,6 +18,8 @@ def run(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distan
     avg_angle_L = []
     avg_angle_R = []
     mylidar_scan = []
+    angle_L = 0
+    angle_R = 0
 
     for y in range(0, 15):
 
@@ -41,7 +43,7 @@ def run(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distan
                     total = 1
                 elif lower_angle_R < mylist[1] < upper_angle_R and lower_distance_R < mylist[2] < upper_distance_R:
                     dist_R = mylist[2]
-                    angle_L = mylist[1]
+                    angle_R = mylist[1]
                     total = 1
 
                 if total == 1:
