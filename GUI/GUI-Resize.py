@@ -78,24 +78,14 @@ class MyApp():
         self.logo_label.image = logo
         self.logo_label.grid(row=0, column=1, sticky='EWNS')
 
-        self.start_button = Button(self.button_frame, command=self.button_start_click, padx=5, pady=5, text='Start')
-        self.start_button.configure(font=mybuttonFont, relief=RAISED)
-        self.start_button.grid(row=0, column=0, pady=25, padx=25, sticky='EWNS')
-        self.start_button.bind("<Return>", self.button_start_click_a)
+        mybuttons = ['Start', 'Stop', 'Reset', 'Exit']
+        self.buttons = []
+        for column_index, button in enumerate(mybuttons):
+            self.buttons.append(Button(self.button_frame, text=button,
+                                       command=lambda column_index=column_index: self.button_click_a(column_index)))
+            self.buttons[column_index].configure(font=mybuttonFont, relief=RAISED)
+            self.buttons[column_index].grid(row=0, column=column_index, pady=25, padx=25, sticky='EWNS')
 
-        self.stop_button = Button(self.button_frame, command=self.button_stop_click, padx=5, pady=5, text='Stop')
-        self.stop_button.configure(font=mybuttonFont, relief=RAISED)
-        self.stop_button.grid(row=0, column=1, pady=25, padx=25, sticky='EWNS')
-        self.stop_button.bind("<Return>", self.button_stop_click_a)
-
-        self.reset_button = Button(self.button_frame, padx=5, pady=5, text='Reset')
-        self.reset_button.configure(font=mybuttonFont, relief=RAISED)
-        self.reset_button.grid(row=0, column=2, pady=25, padx=25, sticky='EWNS')
-
-        self.exit_button = Button(self.button_frame, command=self.button_exit_click, padx=5, pady=5, text='Exit')
-        self.exit_button.configure(font=mybuttonFont, relief=RAISED)
-        self.exit_button.grid(row=0, column=3, pady=25, padx=25, sticky='EWNS')
-        self.exit_button.bind("<Return>", self.button_exit_click_a)
 
         self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=300)
         self.progress.grid(column=0, row=2, padx=5, pady=25, sticky='EWNS')
@@ -110,7 +100,7 @@ class MyApp():
             else:
                 mylabels = Label(self.coord_frame, text=text)
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
-                mylabels.grid(column=3, row=row_index-3, sticky='EWNS', padx=5, pady=15)
+                mylabels.grid(column=3, row=row_index - 3, sticky='EWNS', padx=5, pady=15)
 
         mycoords = ['5.55', '6.66', '7.77', '8.88', '9.99', '1.11']
 
@@ -126,25 +116,29 @@ class MyApp():
 
         Label(self.footer_frame, text="", pady=20, background="#00A1E4").grid(column=0, row=0, sticky='EWNS')
 
-    def button_start_click(self):
-        self.start_button.configure(state="disabled")
+    def button_click_a(self, i):
+        if i == 0:
+            self.button_start_click()
+        elif i == 1:
+            self.button_stop_click()
+        elif i == 2:
+            self.button_reset_click()
+        elif i == 3:
+            self.button_exit_click()
 
-    def button_start_click_a(self):
-        self.button_start_click()
+    def button_start_click(self):
+        self.buttons[0].configure(state="disabled")
 
     def button_stop_click(self):
-        self.start_button.configure(state="normal")
+        self.buttons[0].configure(state="normal")
 
-    def button_stop_click_a(self):
-        self.button_stop_click()
+    def button_reset_click(self):
+        self.buttons[0].configure(state="normal")
 
     def button_exit_click(self):
         root.destroy()
 
-    def button_exit_click_a(self, event):
-        self.button_exit_click()
-
 
 root = Tk()
-myapp = MyApp(root)  # , "192.168.1.102", 'COM3', False)
+myapp = MyApp(root)
 root.mainloop()
