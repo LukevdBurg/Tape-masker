@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.animation as animation
 
-
 def scanner():
     scan = []
     lidar = RPLidar("COM3")
@@ -20,16 +19,8 @@ def scanner():
 def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
         upper_distance_L, upper_distance_R):
     mylidar = RPLidar("COM3", baudrate=115200)
-    total = 0
-    arr_avg_L = []
-    arr_avg_R = []
-    avg_angle_L = []
-    avg_angle_R = []
     mylidar_scan = []
-    angle_L = 0
-    angle_R = 0
-    dist_L = 0
-    dist_R = 0
+
 
 
     for y in range(0, 15):
@@ -42,43 +33,39 @@ def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, l
                 break
 
         for i in range(len(mylidar_scan)):  # aantal rondes
-
+            leftvane = []
+            rightvane = []
             # print("Len lidarscan i : ", len(mylidar_scan[i]))
             for j in range(len(mylidar_scan[i])):  # aantal metingen in het rondje
                 mylist = mylidar_scan[i][j]
-                # print(mylist[2])
+
 
                 if lower_angle_L < mylist[1] < upper_angle_L and lower_distance_L < mylist[2] < upper_distance_L:
-                    dist_L = mylist[2]
-                    angle_L = mylist[1]
-                    total = 1
+                    leftvane.append(mylist)
                 elif lower_angle_R < mylist[1] < upper_angle_R and lower_distance_R < mylist[2] < upper_distance_R:
-                    dist_R = mylist[2]
-                    angle_R = mylist[1]
-                    total = 1
+                    rightvane.append(mylist)
 
-                if total == 1:
-                    # aver = som / total
-                    avg_angle_L.append(angle_L)
-                    avg_angle_R.append(angle_R)
-                    arr_avg_L.append(dist_L)
-                    arr_avg_R.append(dist_R)
-                    total = 0
+
 
             # print("arr_avg: ", arr_avg)
-            arr_mean_L = np.mean(arr_avg_L)
-            arr_mean_R = np.mean(arr_avg_R)
-            arr_avg_angle_L = np.mean(avg_angle_L)
-            arr_avg_angle_R = np.mean(avg_angle_R)
-            print("Average Left: ", arr_mean_L)
-            print("Average Right: ", arr_mean_R)
+            if leftvane and rightvane:
+                leftvane = np.array(leftvane)
+                rightvane = np.array(rightvane)
+                averageleftvane = np.mean(leftvane[:,2])
+                averagerightvane = np.mean(rightvane[:,2])
+                averageangleleftvane = np.mean(leftvane[:,1])
+                averageanglerightvane = np.mean(rightvane[:,1])
+                print("Average numpy left",averageleftvane)
+                print("Average numpy right", averagerightvane)
+
+
 
         #mylidar.clean_input()
 
         mylidar.stop()
         mylidar.stop_motor()
         mylidar.disconnect()
-        return arr_mean_L, arr_mean_R, arr_avg_angle_L, arr_avg_angle_R
+        return averageleftvane, averagerightvane, averageangleleftvane, averageanglerightvane
 
 
 def run():
@@ -102,8 +89,8 @@ def run():
     secondvane = newvanes[minimumindextwo]
     print("second vane", secondvane)
     if firstvane[1]<secondvane[1]:
-        arr_mean_L, arr_mean_R, arr_avg_angle_L, arr_avg_angle_R = findexactvanes(firstvane[1] - 1, secondvane[1] - 1,
-                                                                                  firstvane[1] + 1, secondvane[1] + 1,
+        arr_mean_L, arr_mean_R, arr_avg_angle_L, arr_avg_angle_R = findexactvanes(firstvane[1] - 2, secondvane[1] - 2,
+                                                                                  firstvane[1] + 2, secondvane[1] + 2,
                                                                                   firstvane[2] - 2, secondvane[2] - 2,
                                                                                   firstvane[2] + 10, secondvane[2] + 10)
     else:
