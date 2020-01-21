@@ -20,10 +20,13 @@ def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, l
         upper_distance_L, upper_distance_R):
     mylidar = RPLidar("COM3", baudrate=115200)
     mylidar_scan = []
+    totalaverageleftvane = []
+    totalaveragerightvane = []
+    totalaverageangleleftvane = []
+    totalaverageanglerightvane = []
 
 
-
-    for y in range(0, 15):
+    for y in range(0, 5):
 
         for i, scan in enumerate(mylidar.iter_scans()): #scan_type='normal', max_buf_meas=60000
             # print('%d: Got %d measures' % (i, len(scan)))
@@ -47,25 +50,37 @@ def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, l
 
 
 
-            # print("arr_avg: ", arr_avg)
-            if leftvane and rightvane:
-                leftvane = np.array(leftvane)
-                rightvane = np.array(rightvane)
-                averageleftvane = np.mean(leftvane[:,2])
-                averagerightvane = np.mean(rightvane[:,2])
-                averageangleleftvane = np.mean(leftvane[:,1])
-                averageanglerightvane = np.mean(rightvane[:,1])
-                print("Average numpy left",averageleftvane)
-                print("Average numpy right", averagerightvane)
+        # print("arr_avg: ", arr_avg)
+        if leftvane and rightvane:
+            leftvane = np.array(leftvane)
+            rightvane = np.array(rightvane)
+            averageleftvane = np.mean(leftvane[:,2])
+            averagerightvane = np.mean(rightvane[:,2])
+            averageangleleftvane = np.mean(leftvane[:,1])
+            averageanglerightvane = np.mean(rightvane[:,1])
+
+            totalaverageleftvane.append(averageleftvane)
+            totalaveragerightvane.append(averagerightvane)
+            totalaverageangleleftvane.append(averageangleleftvane)
+            totalaverageanglerightvane.append(averageanglerightvane)
+            print("Average numpy left",averageleftvane)
+            print("Average numpy right", averagerightvane)
 
 
 
         #mylidar.clean_input()
-
-        mylidar.stop()
-        mylidar.stop_motor()
-        mylidar.disconnect()
-        return averageleftvane, averagerightvane, averageangleleftvane, averageanglerightvane
+    grandtotalleft = np.mean(totalaverageleftvane)
+    grandtotalright = np.mean(totalaveragerightvane)
+    grandtotalleftangle = np.mean(totalaverageangleleftvane)
+    grandtotalrightangle = np.mean(totalaverageanglerightvane)
+    print("totaal links:",grandtotalleft)
+    print("totaal rechts:", grandtotalright)
+    print("totaal hoek links:", grandtotalleftangle)
+    print("totaal hoek rechts:", grandtotalrightangle)
+    mylidar.stop()
+    mylidar.stop_motor()
+    mylidar.disconnect()
+    return grandtotalleft, grandtotalright, grandtotalleftangle, grandtotalrightangle
 
 
 def run():
