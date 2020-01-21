@@ -57,12 +57,15 @@ class MyApp():
         self.button_frame.grid_columnconfigure(2, weight=1)
         self.button_frame.grid_columnconfigure(3, weight=1)
 
-        # self.progress_frame.grid_rowconfigure(2, weight=1)
+        #self.progress_frame.grid_rowconfigure(2, weight=1)
         self.progress_frame.grid_columnconfigure(0, weight=1)
+        self.progress_frame.grid_columnconfigure(1, weight=1)
+        self.progress_frame.grid_columnconfigure(1, weight=1)
+        self.progress_frame.grid_rowconfigure(3, weight=1)
 
-        self.coord_frame.grid_rowconfigure(3, weight=1)
         self.coord_frame.grid_rowconfigure(4, weight=1)
         self.coord_frame.grid_rowconfigure(5, weight=1)
+        self.coord_frame.grid_rowconfigure(6, weight=1)
         self.coord_frame.grid_columnconfigure(0, weight=1)
         self.coord_frame.grid_columnconfigure(1, weight=1)
         self.coord_frame.grid_columnconfigure(2, weight=1)
@@ -89,8 +92,17 @@ class MyApp():
             self.buttons[column_index].configure(font=mybuttonFont, relief=RAISED)
             self.buttons[column_index].grid(row=0, column=column_index, pady=25, padx=25, sticky='EWNS')
 
-        self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=300)
-        self.progress.grid(column=0, row=2, padx=5, pady=25, sticky='EWNS')
+        resultblade = StringVar()
+
+        self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=200)
+        self.progress.grid(column=1, columnspan=2, row=1, padx=5, pady=25, sticky='EWNS')
+        self.progress_label = Label(self.progress_frame, text="Blade: ")
+        self.progress_label.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
+        self.progress_label.grid(column=0, row=2)
+        self.progress_blade = Label(self.progress_frame, textvariable=resultblade)
+        self.progress_blade.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
+        self.progress_blade.grid(column=1, row=2)
+        resultblade.set(1)
 
         mylabel_text = ['Connection with Robot: ', 'Connection with Lidar: ', 'Z', 'RX', 'RY', 'RZ']
 
@@ -104,8 +116,9 @@ class MyApp():
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
                 mylabels.grid(column=3, row=row_index - 3, sticky='EWNS', padx=5, pady=15)
 
-        self.mycoords = ['Not connected', 6.66, 7.77, 8.88, 9.99, 1.11]
+        self.mycoords = ['Not connected', 'Not connected', 7.77, 8.88, 9.99, 1.11]
         self.mylabels = []
+
         for row_index, text in enumerate(self.mycoords):
             if row_index < (len(self.mycoords) / 2):
                 self.mylabels.append(Label(self.coord_frame, text=text))
@@ -130,7 +143,7 @@ class MyApp():
 
     def button_start_click(self):
         if self.buttons[0]["text"] == 'Start':
-            # Make robot start
+            # TODO Make robot start
             print('Robot starting...')
         try:
             # TODO create a hold function till connected or showerror
@@ -140,9 +153,11 @@ class MyApp():
             showerror("Error", "Could not connect with the robot\n Make sure the robot is plugged in!")
 
     def button_stop_click(self):
+        # TODO stop the robot
         self.buttons[0].configure(state="normal")
 
     def button_reset_click(self):
+        # TODO set everything back to begin state
         self.buttons[0].configure(state="normal")
 
     def button_exit_click(self):
