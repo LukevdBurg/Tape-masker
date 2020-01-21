@@ -1,7 +1,7 @@
 import tkinter.ttk as ttk
 from tkinter import *
 from tkinter.font import Font
-from tkinter.messagebox import showinfo
+from tkinter.messagebox import showinfo, showerror
 
 from PIL import Image, ImageTk
 
@@ -10,7 +10,6 @@ from Circle import MyRobot
 
 class MyApp():
     def __init__(self, parent):
-        #myrobot = MyRobot("192.168.1.102", 'COM3', False)
 
         # ---Font constants---
         mytitleFont = Font(family="Arial", size=16, weight="bold")
@@ -82,7 +81,7 @@ class MyApp():
         self.logo_label.image = logo
         self.logo_label.grid(row=0, column=1, sticky='EWNS')
 
-        mybuttons = ['Start', 'Stop', 'Reset', 'Exit']
+        mybuttons = ['Connect', 'Stop', 'Reset', 'Exit']
         self.buttons = []
         for column_index, button in enumerate(mybuttons):
             self.buttons.append(Button(self.button_frame, text=button,
@@ -93,7 +92,7 @@ class MyApp():
         self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=300)
         self.progress.grid(column=0, row=2, padx=5, pady=25, sticky='EWNS')
 
-        mylabel_text = ['X', 'Y', 'Z', 'RX', 'RY', 'RZ']
+        mylabel_text = ['Connection with Robot: ', 'Connection with Lidar: ', 'Z', 'RX', 'RY', 'RZ']
 
         for row_index, text in enumerate(mylabel_text):
             if row_index < (len(mylabel_text) / 2):
@@ -105,7 +104,7 @@ class MyApp():
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
                 mylabels.grid(column=3, row=row_index - 3, sticky='EWNS', padx=5, pady=15)
 
-        self.mycoords = [5.55, 6.66, 7.77, 8.88, 9.99, 1.11]
+        self.mycoords = ['Not connected', 6.66, 7.77, 8.88, 9.99, 1.11]
         self.mylabels = []
         for row_index, text in enumerate(self.mycoords):
             if row_index < (len(self.mycoords) / 2):
@@ -130,8 +129,15 @@ class MyApp():
             self.button_exit_click()
 
     def button_start_click(self):
-        self.buttons[0].configure(state="disabled")
-        self.popup_info()
+        if self.buttons[0]["text"] == 'Start':
+            # Make robot start
+            print('Robot starting...')
+        try:
+            # TODO create a hold function till connected or showerror
+            myrobot = MyRobot("192.168.1.102", 'COM3', False)
+            self.buttons[0].configure(text='Start')
+        except:
+            showerror("Error", "Could not connect with the robot\n Make sure the robot is plugged in!")
 
     def button_stop_click(self):
         self.buttons[0].configure(state="normal")
@@ -143,7 +149,7 @@ class MyApp():
         root.destroy()
 
     def popup_info(self):
-        showinfo("Window", "Hello World!")
+        showinfo("Robot", "Connection with robot")
 
 
 root = Tk()
