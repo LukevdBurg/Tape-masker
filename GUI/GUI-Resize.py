@@ -86,7 +86,6 @@ class MyApp():
             self.buttons[column_index].configure(font=mybuttonFont, relief=RAISED)
             self.buttons[column_index].grid(row=0, column=column_index, pady=25, padx=25, sticky='EWNS')
 
-
         self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=300)
         self.progress.grid(column=0, row=2, padx=5, pady=25, sticky='EWNS')
 
@@ -102,17 +101,17 @@ class MyApp():
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
                 mylabels.grid(column=3, row=row_index - 3, sticky='EWNS', padx=5, pady=15)
 
-        mycoords = ['5.55', '6.66', '7.77', '8.88', '9.99', '1.11']
-
-        for row_index, text in enumerate(mycoords):
-            if row_index < (len(mycoords) / 2):
-                mylabels = Label(self.coord_frame, text=text)
-                mylabels.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-                mylabels.grid(column=1, row=row_index, sticky='EWNS')
+        self.mycoords = [5.55, 6.66, 7.77, 8.88, 9.99, 1.11]
+        self.mylabels = []
+        for row_index, text in enumerate(self.mycoords):
+            if row_index < (len(self.mycoords) / 2):
+                self.mylabels.append(Label(self.coord_frame, text=text))
+                self.mylabels[row_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
+                self.mylabels[row_index].grid(column=1, row=row_index, sticky='EWNS')
             else:
-                mylabels = Label(self.coord_frame, text=text)
-                mylabels.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-                mylabels.grid(column=4, row=row_index - 3, sticky='EWNS')
+                self.mylabels.append(Label(self.coord_frame, text=text))
+                self.mylabels[row_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
+                self.mylabels[row_index].grid(column=4, row=row_index - 3, sticky='EWNS')
 
         Label(self.footer_frame, text="", pady=20, background="#00A1E4").grid(column=0, row=0, sticky='EWNS')
 
@@ -128,6 +127,8 @@ class MyApp():
 
     def button_start_click(self):
         self.buttons[0].configure(state="disabled")
+        self.mycoords[0] = self.mycoords[0] + 1.11
+        self.mylabels[0].configure(text= self.mycoords[0])
 
     def button_stop_click(self):
         self.buttons[0].configure(state="normal")
@@ -136,6 +137,7 @@ class MyApp():
         self.buttons[0].configure(state="normal")
 
     def button_exit_click(self):
+        print (self.mycoords)
         root.destroy()
 
 
