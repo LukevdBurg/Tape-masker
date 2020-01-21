@@ -67,7 +67,6 @@ def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, l
             for j in range(len(mylidar_scan[i])):  # aantal metingen in het rondje
                 mylist = mylidar_scan[i][j]
 
-
                 if lower_angle_L < mylist[1] < upper_angle_L and lower_distance_L < mylist[2] < upper_distance_L:
                     leftvane.append(mylist)
                 elif lower_angle_R < mylist[1] < upper_angle_R and lower_distance_R < mylist[2] < upper_distance_R:
@@ -76,19 +75,22 @@ def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, l
 
 
         # print("arr_avg: ", arr_avg)
-        if leftvane and rightvane:
+        if leftvane:
             leftvane = np.array(leftvane)
-            rightvane = np.array(rightvane)
             averageleftvane = np.mean(leftvane[:,2])
-            averagerightvane = np.mean(rightvane[:,2])
             averageangleleftvane = np.mean(leftvane[:,1])
-            averageanglerightvane = np.mean(rightvane[:,1])
 
             totalaverageleftvane.append(averageleftvane)
-            totalaveragerightvane.append(averagerightvane)
             totalaverageangleleftvane.append(averageangleleftvane)
-            totalaverageanglerightvane.append(averageanglerightvane)
             print("Average numpy left",averageleftvane)
+
+        if rightvane:
+            rightvane = np.array(rightvane)
+            averagerightvane = np.mean(rightvane[:,2])
+            averageanglerightvane = np.mean(rightvane[:,1])
+
+            totalaveragerightvane.append(averagerightvane)
+            totalaverageanglerightvane.append(averageanglerightvane)
             print("Average numpy right", averagerightvane)
 
 
@@ -134,8 +136,8 @@ def findvanes():
                                                                                   firstvane[2] - 2, secondvane[2] - 2,
                                                                                   firstvane[2] + 10, secondvane[2] + 10)
     else:
-        arr_mean_L, arr_mean_R, arr_avg_angle_L, arr_avg_angle_R = findexactvanes(secondvane[1] - 1, firstvane[1] - 1,
-                                                                                  secondvane[1] + 1, firstvane[1] + 1,
+        arr_mean_L, arr_mean_R, arr_avg_angle_L, arr_avg_angle_R = findexactvanes(secondvane[1] - 2, firstvane[1] - 2,
+                                                                                  secondvane[1] + 2, firstvane[1] + 2,
                                                                                   secondvane[2] - 2, firstvane[2] - 2,
                                                                                   secondvane[2] + 10, firstvane[2] + 10)
     xdistancefromleftvane = np.sin(np.radians(arr_avg_angle_L-90)) * arr_mean_L
