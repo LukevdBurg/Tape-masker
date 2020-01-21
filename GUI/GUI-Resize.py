@@ -1,13 +1,17 @@
 import tkinter.ttk as ttk
 from tkinter import *
 from tkinter.font import Font
+from tkinter.messagebox import showinfo
 
 from PIL import Image, ImageTk
+
+from Circle import MyRobot
 
 
 class MyApp():
     def __init__(self, parent):
-        # myrobot = MyRobot("192.168.1.102", 'COM3', False)
+        #myrobot = MyRobot("192.168.1.102", 'COM3', False)
+
         # ---Font constants---
         mytitleFont = Font(family="Arial", size=16, weight="bold")
         mylabelFont = Font(family="Arial", size=14, weight="bold")
@@ -127,8 +131,7 @@ class MyApp():
 
     def button_start_click(self):
         self.buttons[0].configure(state="disabled")
-        self.mycoords[0] = self.mycoords[0] + 1.11
-        self.mylabels[0].configure(text= self.mycoords[0])
+        self.popup_info()
 
     def button_stop_click(self):
         self.buttons[0].configure(state="normal")
@@ -137,8 +140,10 @@ class MyApp():
         self.buttons[0].configure(state="normal")
 
     def button_exit_click(self):
-        print (self.mycoords)
         root.destroy()
+
+    def popup_info(self):
+        showinfo("Window", "Hello World!")
 
 
 root = Tk()
