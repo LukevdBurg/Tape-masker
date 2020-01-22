@@ -11,7 +11,7 @@ import time
 
 from math import pi, cos, sin, acos
 import math 
-import lidar as lidar
+import lidar_circle as lidar
 
 class MyRobot(urx.Robot):
     # TODO Make it optional to start with the safe pose
@@ -29,7 +29,7 @@ class MyRobot(urx.Robot):
     def on_startup(self):
         # Start position with all joints within limits
         print("Going to startup pose! \n")
-        self.movej(self.safe_pos, acc=self.acc, vel=self.vel)
+        self.movej(self.safe_jpos, acc=self.acc, vel=self.vel)
         
         
     def calibrate_to_center(self):
@@ -69,29 +69,35 @@ class MyRobot(urx.Robot):
     def tapeStation(self):
         # Go to tapestation and grab tape
         print("Going to tapestation!")
-        v = 0.1
-        a = 0.1
+        v = 0.05
+        a = 0.03
         
         #Hardcoded poses of the station
     #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.906 , -1.154 , -2.172 , -1.388 , 1.571 , -1.234] #starting J pose
-    #    grabTapePose = [-0.135 , 0.108 , 0.912 , 1.027 , 1.392 , -1.026] #Grabbing pose
-    #    forwardTapePose = [-0.135 , 0.03 , 0.912 , 1.16 , 1.322 , -1.146] #move forward and flatten
+        grabTapePose = [ 0.058 , 0.457 , 0.216 , 2.222 , 2.219 , -0.001] #Grabbing pose
+        forwardTapePose = [0.065 , 0.457 , 0.072 , 2.222 , 2.219 , -0.001] #move forward and flatten 0.062
+        gripper_pin = 0
+        servo_pin = 1
         
         # Movements
     #    self.move_to_middle() # Go to middle of motor at start and end
-        self.movej(stationJPose, acc=a,vel=v*2)
-    #    self.movel(grabTapePose, acc=a,vel=v)
+        self.movej(stationJPose, acc=a,vel=v*2) #JPose near the station
+        self.movel(grabTapePose, acc=a,vel=v)  #Go to grab tape
+        time.sleep(2) #Remove when gripper connected
     #    closeGripper()
-        time.sleep(1.5) #Remove when gripper connected
+        self.set_digital_out(gripper_pin, True) #Gripper closed
+        time.sleep(2) #Remove when gripper connected
         
-    #    self.movel(forwardTapePose, acc=a,vel=v)
-    #    forwardTapePose[1] -= 0.01
-    #    self.translate_tool((0, 0, 0.02), acc=a, vel=v)
-    #    closeServo()
+        self.movel(forwardTapePose, acc=a,vel=v)   #Pull tapeforward
+    
+        forwardTapePose[0] -= 0.05 #dont know check!
+#        Closepusher
+    #    self.translate_tool((0, 0, 0.02), acc=a, vel=v) #move forward for 
+        self.set_digital_out(servo_pin, True) #Close servo
+        self.movel(forwardTapePose, acc=a,vel=v)
         time.sleep(1.5) #Remove when servo connected
-        
-    #    self.movel(middleStatorPose, acc=a, vel=v)
+
     #    self.moveToMiddle() # Go to middle of motor at start and end
         print("Tapestation done \n")
     
@@ -154,8 +160,8 @@ if __name__ == "__main__":
     #Configure Robot
     logging.basicConfig(level=logging.WARN)
 #    rob = urx.Robot("192.168.1.102", True)
-    myrobot = MyRobot("192.168.1.102", 'COM3')
-    
+    myrobot = MyRobot("192.168.1.102", 'COM4')
+    myrobot.mylidar.disconnect()
     time.sleep(1)
     v = 0.1
     a = 0.3
@@ -166,11 +172,11 @@ if __name__ == "__main__":
 #    x, z = lidar.find_vane()
 #    print("X = ",x, "\nZ = ", z)
     
-#    startup() #Joint move in middle of joint limits UR10
+#    myrobot.on_startup() #Joint move in middle of joint limits UR10
 #    calibrateCenter()  #Get center with LIDAR
-#    tapeStation()
+    myrobot.tapeStation()
 #    middleStatorPose = rob.getl()
-    myrobot.tape_movement()
+#    myrobot.tape_movement()
     middleStatorPose = [-0.219 , -0.242 , 0.83 , 0.0 , -0.0 , -1.57] #remove when using LIDAR
     middleStatorJPose = myrobot.getj()
 #    moveToMiddle()
@@ -180,8 +186,8 @@ if __name__ == "__main__":
     
     try:
 #            print(i, ": ", myrobot.tape_movement())
-        myrobot.tape_movement()
-        
+#        myrobot.tape_movement()
+        '''
         i = 0 #2 # Start at 3nd OGV because woodenbeam
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
         for i in range(76): #35

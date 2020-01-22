@@ -5,11 +5,13 @@ from rplidar import RPLidar
 class MyRPLidar(RPLidar):
     def __init__(self, port):
         super().__init__(port)
+        self.port = port
 
     def scanner(self):
         scan = []
-        lidar = RPLidar("COM3")
-
+#        lidar = RPLidar("COM3")
+        lidar = RPLidar(self.port)
+        
         iterator = lidar.iter_scans()
         for i in range(0, 10):
             scan += next(iterator)
@@ -151,7 +153,8 @@ class MyRPLidar(RPLidar):
 
         mean_z_distance = (abs(z_distance_from_left_vane) + abs(z_distance_from_right_vane)) / 2
         x_distance_to_center = (x_distance_from_left_vane + x_distance_from_right_vane) / 2
+        print(MyRPLidar.find_vanes())
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
 
-print(MyRPLidar.find_vanes())
+        
