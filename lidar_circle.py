@@ -73,8 +73,6 @@ class MyRPLidar(RPLidar):
                     elif lower_angle_R < my_list[1] < upper_angle_R and lower_distance_R < my_list[2] < upper_distance_R:
                         right_vane.append(my_list)
 
-            print("left", left_vane)
-            print("right", right_vane)
             # print("arr_avg: ", arr_avg)
             if left_vane:
                 left_vane = np.array(left_vane)
@@ -83,7 +81,7 @@ class MyRPLidar(RPLidar):
 
                 total_average_left_vane.append(average_left_vane)
                 total_average_angle_left_vane.append(average_angle_left_vane)
-                print("Average numpy left", average_left_vane)
+                print("Average left", average_left_vane)
 
             if right_vane:
                 right_vane = np.array(right_vane)
@@ -92,7 +90,7 @@ class MyRPLidar(RPLidar):
 
                 total_average_right_vane.append(average_right_vane)
                 total_average_angle_right_vane.append(average_angle_right_vane)
-                print("Average numpy right", average_right_vane)
+                print("Average right", average_right_vane)
 
             mylidar.clean_input()
         grand_total_left = np.mean(total_average_left_vane)
