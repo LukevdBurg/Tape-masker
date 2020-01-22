@@ -16,14 +16,12 @@ import lidar as lidar
 
 class MyRobot(urx.Robot):
     # TODO Make it optional to start with the safe pose
-    def __init__(self, host, port, safe_start):
+    def __init__(self, host, port):
         super().__init__(host)
         self.mylidar = lidar.MyRPLidar(port)
         self.safe_pos = ([0.283, -0.416, -2.305, 1.152, 1.571, -0.283])
         self.acc = 0.3
         self.vel = 0.1
-        if safe_start:
-            self.on_startup()
 
     def __del__(self):
         print ("Deleted")

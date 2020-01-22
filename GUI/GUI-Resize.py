@@ -1,7 +1,8 @@
 import socket
+import urx
 from tkinter import *
 from tkinter.font import Font
-from tkinter.messagebox import showinfo, showerror
+from tkinter.messagebox import showerror
 
 from PIL import Image, ImageTk
 
@@ -142,26 +143,31 @@ class MyApp():
             except socket.error as err:
                 showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
                 self.console_print("Connection error, try again... \n")
+            except urx.ursecmon.TimeoutException as err:
+                showerror("Timeout error", "Could not connect with the robot\n Restart the robot!")
             else:
                 self.buttons[0].configure(text='Start')
 
         if start_clicked == 1:
             self.myrobot.on_startup()
+            self.buttons[0].configure(state='disabled')
 
     def button_stop_click(self):
         # TODO stop the robot
         self.buttons[0].configure(state="normal")
+        self.myrobot.stop()
 
     def button_reset_click(self):
         # TODO set everything back to begin state
         self.buttons[0].configure(state="normal")
+        self.buttons[0].configure(text="Connect")
+        self.myrobot.__del__()
+        self.console_print("Back to begin state! \n")
+        self.myrobot.mylidar.disconnect()
 
     def button_exit_click(self):
-        self.console_print("Shutting down")
+        self.console_print("Shutting down \n")
         root.destroy()
-
-    def popup_info(self):
-        showinfo("Robot", "Connection with robot")
 
 
 root = Tk()
