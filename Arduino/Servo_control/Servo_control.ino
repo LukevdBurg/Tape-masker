@@ -10,14 +10,16 @@ void setup() {
   myservo.attach(6);  // attaches the servo on pin 9 to the servo object
   pinMode(inPin, INPUT); //Set pin 2 as input
   myservo.write(pos); //Servo goes to default position
+  Serial.begin(9600);
 }
 
 void loop() {
 bool pinVal = digitalRead(inPin);
+Serial.println(pinVal);
 if (pinVal == HIGH){
-  myservo.write(180);             // tell servo to go to cutting position
+  myservo.write(0);             // tell servo to go to cutting position
 }
 else{
-myservo.write(0);             // tell servo to go to neutral position
+myservo.write(190);             // tell servo to go to neutral position
 }
 }

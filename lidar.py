@@ -4,10 +4,10 @@ import numpy as np
 
 def scanner():
     scan = []
-    lidar = RPLidar("COM4")
+    lidar = RPLidar("COM3")
 
     iterator = lidar.iter_scans()
-    for i in range(0,5):
+    for i in range(0,10):
         scan += next(iterator)
     lidar.stop()
     lidar.stop_motor()
@@ -42,7 +42,7 @@ def find_middle():
 
 def findexactvanes(lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
         upper_distance_L, upper_distance_R):
-    mylidar = RPLidar("COM4", baudrate=115200)
+    mylidar = RPLidar("COM3", baudrate=115200)
     mylidar_scan = []
     totalaverageleftvane = []
     totalaveragerightvane = []
@@ -123,8 +123,9 @@ def findvanes():
 
     newvanes = []
     for row in vane:
-        if row[1] < firstvane[1]-2.5 or row[1] > firstvane[1]+2.5:
-            newvanes.append(row)
+        if row[1] < firstvane[1]-5 or row[1] > firstvane[1]+5:
+            if row[2] < firstvane[2]+20:
+                newvanes.append(row)
     newvanes = np.array(newvanes)
     minimumindextwo = np.argmin(newvanes[:,2])
     secondvane = newvanes[minimumindextwo]
@@ -149,4 +150,4 @@ def findvanes():
     xdistancetocenter = (xdistancefromleftvane + xdistancefromrightvane) / 2
     return xdistancetocenter/1000, meanzdistance/1000
 
-#    print(findvanes())
+print(findvanes())
