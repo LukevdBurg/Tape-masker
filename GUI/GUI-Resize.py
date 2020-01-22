@@ -1,4 +1,4 @@
-import tkinter.ttk as ttk
+import socket
 from tkinter import *
 from tkinter.font import Font
 from tkinter.messagebox import showinfo, showerror
@@ -38,47 +38,34 @@ class MyApp():
         self.button_frame = Frame(self.myParent, bg='#00A1E4')
         self.button_frame.grid(row=1, column=0, sticky=NSEW)
 
-        self.progress_frame = Frame(self.myParent, bg='#00A1E4')
-        self.progress_frame.grid(row=2, column=0, sticky=NSEW)
-
         self.coord_frame = Frame(self.myParent, bg='#00A1E4')
-        self.coord_frame.grid(row=3, column=0, sticky=NSEW)
+        self.coord_frame.grid(row=2, column=0, sticky=NSEW)
 
         self.footer_frame = Frame(self.myParent, bg='#00A1E4')
-        self.footer_frame.grid(row=4, column=0, sticky=NSEW)
+        self.footer_frame.grid(row=3, column=0, sticky=NSEW)
 
-        self.logo_frame.grid_rowconfigure(0, weight=1)
+        # self.logo_frame.grid_rowconfigure(0, weight=1)
         self.logo_frame.grid_columnconfigure(0, weight=1)
         self.logo_frame.grid_columnconfigure(1, weight=1)
 
-        self.button_frame.grid_rowconfigure(1, weight=1)
+        # self.button_frame.grid_rowconfigure(1, weight=1)
         self.button_frame.grid_columnconfigure(0, weight=1)
         self.button_frame.grid_columnconfigure(1, weight=1)
         self.button_frame.grid_columnconfigure(2, weight=1)
         self.button_frame.grid_columnconfigure(3, weight=1)
 
-        #self.progress_frame.grid_rowconfigure(2, weight=1)
-        self.progress_frame.grid_columnconfigure(0, weight=1)
-        self.progress_frame.grid_columnconfigure(1, weight=1)
-        self.progress_frame.grid_columnconfigure(1, weight=1)
-        self.progress_frame.grid_rowconfigure(3, weight=1)
-
-        self.coord_frame.grid_rowconfigure(4, weight=1)
-        self.coord_frame.grid_rowconfigure(5, weight=1)
-        self.coord_frame.grid_rowconfigure(6, weight=1)
+        self.coord_frame.grid_rowconfigure(0, weight=1)
+        self.coord_frame.grid_rowconfigure(1, weight=1)
         self.coord_frame.grid_columnconfigure(0, weight=1)
         self.coord_frame.grid_columnconfigure(1, weight=1)
         self.coord_frame.grid_columnconfigure(2, weight=1)
         self.coord_frame.grid_columnconfigure(3, weight=1)
-        self.coord_frame.grid_columnconfigure(4, weight=1)
-        self.coord_frame.grid_columnconfigure(5, weight=1)
 
-        # self.footer_frame.grid_rowconfigure(6, weight=1)
         self.footer_frame.grid_columnconfigure(0, weight=1)
 
         self.head_label = Label(self.logo_frame, text='KLM TAPE MASKING ROBOT', padx=25, pady=25)
         self.head_label.configure(font=mytitleFont, bg='#00A1E4', foreground='white')
-        self.head_label.grid(row=0, column=0, sticky='EWNS')
+        self.head_label.grid(row=0, column=0, padx=10, pady=10, sticky='EWNS')
 
         self.logo_label = Label(self.logo_frame, image=logo, bg='#00A1E4')
         self.logo_label.image = logo
@@ -92,65 +79,74 @@ class MyApp():
             self.buttons[column_index].configure(font=mybuttonFont, relief=RAISED)
             self.buttons[column_index].grid(row=0, column=column_index, pady=25, padx=25, sticky='EWNS')
 
-        resultblade = StringVar()
+        mylabel_text = ['Connection with Robot: ', 'Connection with Lidar: ']
 
-        self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=200)
-        self.progress.grid(column=1, columnspan=2, row=1, padx=5, pady=25, sticky='EWNS')
-        self.progress_label = Label(self.progress_frame, text="Blade: ")
-        self.progress_label.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
-        self.progress_label.grid(column=0, row=2)
-        self.progress_blade = Label(self.progress_frame, textvariable=resultblade)
-        self.progress_blade.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
-        self.progress_blade.grid(column=1, row=2)
-        resultblade.set(1)
-
-        mylabel_text = ['Connection with Robot: ', 'Connection with Lidar: ', 'Z', 'RX', 'RY', 'RZ']
-
-        for row_index, text in enumerate(mylabel_text):
-            if row_index < (len(mylabel_text) / 2):
+        for column_index, text in enumerate(mylabel_text):
+            if column_index == 0:
                 mylabels = Label(self.coord_frame, text=text)
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
-                mylabels.grid(column=0, row=row_index, sticky='EWNS', padx=5, pady=15)
+                mylabels.grid(column=column_index, row=0, sticky='EWNS', padx=5, pady=15)
             else:
                 mylabels = Label(self.coord_frame, text=text)
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
-                mylabels.grid(column=3, row=row_index - 3, sticky='EWNS', padx=5, pady=15)
+                mylabels.grid(column=column_index + 1, row=0, sticky='EWNS', padx=5, pady=15)
 
-        self.mycoords = ['Not connected', 'Not connected', 7.77, 8.88, 9.99, 1.11]
+        self.mycoords = ['Not connected', 'Not connected']
         self.mylabels = []
 
-        for row_index, text in enumerate(self.mycoords):
-            if row_index < (len(self.mycoords) / 2):
+        for column_index, text in enumerate(self.mycoords):
+            if column_index == 0:
                 self.mylabels.append(Label(self.coord_frame, text=text))
-                self.mylabels[row_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-                self.mylabels[row_index].grid(column=1, row=row_index, sticky='EWNS')
+                self.mylabels[column_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
+                self.mylabels[column_index].grid(column=column_index + 1, row=0, padx=5, sticky='EWNS')
             else:
                 self.mylabels.append(Label(self.coord_frame, text=text))
-                self.mylabels[row_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-                self.mylabels[row_index].grid(column=4, row=row_index - 3, sticky='EWNS')
+                self.mylabels[column_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
+                self.mylabels[column_index].grid(column=column_index + 2, row=0, padx=5, sticky='EWNS')
 
-        Label(self.footer_frame, text="", pady=20, background="#00A1E4").grid(column=0, row=0, sticky='EWNS')
+        self.console = Text(self.footer_frame, height=15)
+        self.console.grid(column=0, row=0, pady=5, padx=25, sticky='EWNS')
+
+    def console_print(self, text):
+        self.console.insert(END, text)
 
     def button_click_a(self, i):
         if i == 0:
+            if self.buttons[0]["text"] == 'Start':
+                self.console_print("Start button clicked \n")
+            else:
+                self.console_print("Start button clicked \n")
             self.button_start_click()
         elif i == 1:
+            self.console_print("Stop button clicked \n")
             self.button_stop_click()
         elif i == 2:
+            self.console_print("Reset button clicked \n")
             self.button_reset_click()
         elif i == 3:
+            self.console_print("Exit button clicked \n")
             self.button_exit_click()
 
     def button_start_click(self):
+        start_clicked = 0
         if self.buttons[0]["text"] == 'Start':
-            # TODO Make robot start
-            print('Robot starting...')
-        try:
-            # TODO create a hold function till connected or showerror
-            myrobot = MyRobot("192.168.1.102", 'COM3', False)
-            self.buttons[0].configure(text='Start')
-        except:
-            showerror("Error", "Could not connect with the robot\n Make sure the robot is plugged in!")
+            start_clicked = 1
+            self.console_print("Robot starting with masking \n")
+
+        if self.buttons[0]["text"] == 'Connect':
+            try:
+                self.myrobot = MyRobot("192.168.1.102", 'COM3')
+            except socket.timeout as err:
+                showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
+                self.console_print("Connection error, try again... \n")
+            except socket.error as err:
+                showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
+                self.console_print("Connection error, try again... \n")
+            else:
+                self.buttons[0].configure(text='Start')
+
+        if start_clicked == 1:
+            self.myrobot.on_startup()
 
     def button_stop_click(self):
         # TODO stop the robot
@@ -161,6 +157,7 @@ class MyApp():
         self.buttons[0].configure(state="normal")
 
     def button_exit_click(self):
+        self.console_print("Shutting down")
         root.destroy()
 
     def popup_info(self):
