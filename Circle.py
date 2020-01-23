@@ -50,17 +50,24 @@ class MyRobot(urx.Robot):
             self.movel(pose, acc=self.acc / 2, vel=self.vel)
         
         # Move LIDAR to center of motor
-        delta_x, delta_y = self.mylidar.find_middle()
-        pose[0] += delta_x
-        pose[1] += delta_y# 
-        self.movel(pose, acc=self.acc, vel=self.vel) 
+        for i in range(1):
+            delta_x, delta_y = self.mylidar.find_middle()
+            pose[0] += delta_x/2
+            pose[1] += delta_y/2# 
+            self.movel(pose, acc=self.acc, vel=self.vel) 
+            print("Delta X = ", delta_x)
+            print("Delta Y = ", delta_y)
+#        delta_x, delta_y = self.mylidar.find_middle()
+#        pose[0] += delta_x
+#        pose[1] += delta_y# 
+#        self.movel(pose, acc=self.acc, vel=self.vel) 
 
         #Second measurement with the lidar to check. 
         delta_x, delta_y = self.mylidar.find_middle()
         print("Delta X = ", delta_x)
         print("Delta Y = ", delta_y)
-        pose[0] += delta_x + 0.03 #+ 0.061 # deltaX + offset of lidar
-        pose[1] += delta_y + 0.01 # + 0.0185 # deltaY + offset of lidar
+        pose[0] += delta_x +0.02 #+ 0.061 # deltaX + offset of lidar
+        pose[1] += delta_y +0.02# + 0.0185 # deltaY + offset of lidar
     
         #rotate so that tip EOAT is in LIDAR pose    
         pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
@@ -191,8 +198,8 @@ if __name__ == "__main__":
 #5    Links: 74.5 Rechts: 70.5
 #6   Links: 75.5 Rechts: 77.5
     
-#6   Links: 78.5 Rechts: 76.5
-    
+#6   Links: 79.5 Rechts: 75.5
+    #6   Links: 77.4 Rechts: 77.2
     
 #1    Boven: 75 Onder: 79 
 #2    Boven: 75 Onder: 78.5
@@ -201,7 +208,7 @@ if __name__ == "__main__":
 #5    Boven: 73 Onder: 81 
 #6    Boven: 76 Onder: 78
     
-#6    Boven: 78 Onder: 76
+#6    Boven: 76.6 Onder: 77
     
 #    myrobot.tapeStation()
 #    myrobot.tape_movement()
@@ -210,8 +217,10 @@ if __name__ == "__main__":
     try:
 #            print(i, ": ", myrobot.tape_movement())
 #        myrobot.tape_movement()
+
         '''
         i = 3 #2 # Start at 3nd OGV because woodenbeam
+
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
         for i in range(76): #35
 #            if (18 > i => 20 ):
@@ -236,7 +245,7 @@ if __name__ == "__main__":
                 myrobot.movel(pose, acc=a, vel=v)
 #                myrobot.tape_movement()
 
-#        '''
+#   '''
     finally:
         print("Program finished!")
         myrobot.close()
