@@ -64,7 +64,7 @@ class MyRPLidar(RPLidar):
         avg_north = np.mean(north_points)
         avg_east = np.mean(east_points)
         avg_south = np.mean(south_points)
-        return avg_south-avg_north, avg_west-avg_east
+        return (avg_south-avg_north)/1000, (avg_west-avg_east)/1000
 
 
     def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
