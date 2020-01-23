@@ -54,17 +54,21 @@ class MyRPLidar(RPLidar):
         south_points = []
         for row in measurements:
             if row[1] > 358 or row[1] < 2:
-                west_points.append(row)
+                west_points.append(row[2])
             if 88 < row[1] < 92:
-                north_points.append(row)
+                north_points.append(row[2])
             if 178 < row[1] < 182:
-                east_points.append(row)
+                east_points.append(row[2])
             if 268 < row[1] < 272:
-                south_points.append(row)
+                south_points.append(row[2])
         avg_west = np.mean(west_points)
         avg_north = np.mean(north_points)
         avg_east = np.mean(east_points)
         avg_south = np.mean(south_points)
+        print("W:",avg_west)
+        print("N:",avg_north)
+        print("E:",avg_east)
+        print("S:",avg_south)
         return (avg_north-avg_south)/1000/2, (avg_west-avg_east)/1000/2
 
 
@@ -177,8 +181,6 @@ class MyRPLidar(RPLidar):
 
         mean_z_distance = (abs(z_distance_from_left_vane) + abs(z_distance_from_right_vane)) / 2
         x_distance_to_center = (x_distance_from_left_vane + x_distance_from_right_vane) / 2
-        print(MyRPLidar.find_vanes())
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
 
-        
