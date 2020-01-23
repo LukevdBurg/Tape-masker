@@ -43,7 +43,7 @@ class MyRPLidar(RPLidar):
             angle = angles[minimum_index] + 180
         xdist = (np.sin(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
         zdist = (np.cos(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
-        return round(xdist, 2), round(zdist, 2)
+        return xdist, zdist
 
     def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
                          upper_distance_L, upper_distance_R):
@@ -157,4 +157,4 @@ class MyRPLidar(RPLidar):
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
 
-        
+

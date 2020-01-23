@@ -187,7 +187,7 @@ if __name__ == "__main__":
     try:
 #            print(i, ": ", myrobot.tape_movement())
 #        myrobot.tape_movement()
-        '''
+
         i = 0 #2 # Start at 3nd OGV because woodenbeam
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
         for i in range(76): #35
@@ -213,7 +213,7 @@ if __name__ == "__main__":
             myrobot.movel(pose, acc=a, vel=v)
             myrobot.tape_movement()
 
-#        '''
+#
     finally:
         print("Program finished!")
         myrobot.close()
