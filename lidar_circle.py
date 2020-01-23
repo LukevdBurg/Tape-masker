@@ -45,6 +45,28 @@ class MyRPLidar(RPLidar):
         zdist = (np.cos(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
         return xdist, zdist
 
+    def find_middle_offsets(self):
+        measurements = np.array(self.scanner())
+        west_points = []
+        north_points = []
+        east_points = []
+        south_points = []
+        for row in measurements:
+            if row[1] > 358 or row[1] < 2:
+                west_points.append(row)
+            if 88 < row[1] < 92:
+                north_points.append(row)
+            if 178 < row[1] < 182:
+                east_points.append(row)
+            if 268 < row[1] < 272:
+                south_points.append(row)
+        avg_west = np.mean(west_points)
+        avg_north = np.mean(north_points)
+        avg_east = np.mean(east_points)
+        avg_south = np.mean(south_points)
+        return avg_west-avg_east, avg_south-avg_north
+
+
     def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
                          upper_distance_L, upper_distance_R):
         mylidar = RPLidar("COM3", baudrate=115200)
