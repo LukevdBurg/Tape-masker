@@ -43,7 +43,7 @@ class MyRPLidar(RPLidar):
             angle = angles[minimum_index] + 180
         xdist = (np.sin(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
         zdist = (np.cos(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
-        return xdist, zdist
+        return round(xdist, 2), round(zdist, 2)
 
     def find_middle_offsets(self):
         measurements = np.array(self.scanner())
@@ -179,4 +179,4 @@ class MyRPLidar(RPLidar):
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
 
-
+        
