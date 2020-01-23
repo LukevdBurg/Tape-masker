@@ -50,28 +50,30 @@ class MyRobot(urx.Robot):
             self.movel(pose, acc=self.acc / 2, vel=self.vel)
         
         # Move LIDAR to center of motor
-        for i in range(1):
-            delta_x, delta_y = self.mylidar.find_middle()
-            pose[0] += delta_x/2
-            pose[1] += delta_y/2# 
-            self.movel(pose, acc=self.acc, vel=self.vel) 
-            print("Delta X = ", delta_x)
-            print("Delta Y = ", delta_y)
+#        for i in range(1):
+        delta_x, delta_y = self.mylidar.find_middle()
+        pose[0] += delta_x
+        pose[1] += delta_y# 
+        self.movel(pose, acc=self.acc, vel=self.vel) 
+        print("Delta X = ", delta_x)
+        print("Delta Y = ", delta_y)
 #        delta_x, delta_y = self.mylidar.find_middle()
 #        pose[0] += delta_x
 #        pose[1] += delta_y# 
 #        self.movel(pose, acc=self.acc, vel=self.vel) 
 
         #Second measurement with the lidar to check. 
-        delta_x, delta_y = self.mylidar.find_middle()
-        print("Delta X = ", delta_x)
-        print("Delta Y = ", delta_y)
-        pose[0] += delta_x +0.02 #+ 0.061 # deltaX + offset of lidar
-        pose[1] += delta_y +0.02# + 0.0185 # deltaY + offset of lidar
+        for i in range(5):
+            delta_x, delta_y = self.mylidar.find_middle_offsets()
+            print("Delta X = ", delta_x)
+            print("Delta Y = ", delta_y)
+            pose[0] += delta_x #+0.02 #+ 0.061 # deltaX + offset of lidar
+            pose[1] += delta_y #+0.02# + 0.0185 # deltaY + offset of lidar
+            self.movel(pose, acc=self.acc, vel=self.vel)
     
         #rotate so that tip EOAT is in LIDAR pose    
-        pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
-        self.movel(pose, acc=self.acc, vel=self.vel)
+#        pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
+#        self.movel(pose, acc=self.acc, vel=self.vel)
         print("Done calibrating center! \n")
        
     
