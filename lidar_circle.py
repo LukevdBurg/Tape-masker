@@ -43,6 +43,7 @@ class MyRPLidar(RPLidar):
             angle = angles[minimum_index] + 180
         xdist = (np.sin(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
         zdist = (np.cos(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
+
         return xdist,zdist
 
     def find_middle_offsets(self):
@@ -65,6 +66,7 @@ class MyRPLidar(RPLidar):
         avg_east = np.mean(east_points)
         avg_south = np.mean(south_points)
         return (avg_north-avg_south)/1000/2, (avg_west-avg_east)/1000/2
+
 
 
     def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
