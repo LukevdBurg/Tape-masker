@@ -29,6 +29,7 @@ class MyRobot(urx.Robot):
     def on_startup(self):
         # Start position with all joints within limits
         print("Going to startup pose! \n")
+        self.movel((0, 0, -0.15, 0, 0, 0), acc=self.acc, vel=self.vel, relative=True)
         self.movej(self.safe_jpos, acc=self.acc, vel=self.vel)
         
         
@@ -70,11 +71,11 @@ class MyRobot(urx.Robot):
             pose[0] += delta_x #+ 0.061#+0.02 #+ 0.061 # deltaX + offset of lidar
             pose[1] += delta_y #+0.02# + 0.0185 # deltaY + offset of lidar
             self.movel(pose, acc=self.acc/2, vel=self.vel)
-        pose[1] -=0.001
-        pose[0] +=0.061-0.0229
+#        pose[1] -=0.001
+#        pose[0] +=0.061-0.0229
         #rotate so that tip EOAT is in LIDAR pose    
-        pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
-        self.movel(pose, acc=self.acc, vel=self.vel)
+#        pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
+#        self.movel(pose, acc=self.acc, vel=self.vel)
         print("Done calibrating center! \n")
        
     
@@ -83,7 +84,7 @@ class MyRobot(urx.Robot):
         print("Going to tapestation!")
         v = 0.05
         a = 0.03
-        
+        self.movel((0, 0, -0.15, 0, 0, 0), acc=a, vel=v, relative=True)
         #Hardcoded poses of the station
     #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.906 , -1.154 , -2.172 , -1.388 , 1.571 , -1.234] #starting J pose
@@ -109,8 +110,8 @@ class MyRobot(urx.Robot):
         self.set_digital_out(servo_pin, True) #Close servo
         self.movel(forwardTapePose, acc=a,vel=v)
         time.sleep(1.5) #Remove when servo connected
-
-    #    self.moveToMiddle() # Go to middle of motor at start and end
+        self.movej(stationJPose, acc=a,vel=v*2) #JPose near the station
+        self.movej(middleStatorJPose, acc=self.acc, vel=self.vel * 2)
         print("Tapestation done \n")
     
     
@@ -124,14 +125,14 @@ class MyRobot(urx.Robot):
         # Taping movement
         print("Tape movement!")
         d_horizontal = 0.14#0.14 #Forward distance
-        d_vertical = 0.015 #Pushing down distance
+        d_vertical = 0.02 #Pushing down distance
         ogvAngle = np.deg2rad(9) #Horizontal angle of the OGV's
-        
-        #Get correction distances from LIDAR
+
+#             #Get correction distances from LIDAR
         correctionX, correctionZ = self.mylidar.find_vanes()
         print("X = ",correctionX, "\nZ = ", correctionZ)
         time.sleep(0.5)
-    #    correctionX = -correctionX
+#       correctionX = -correctionX
         correctionX += 0.006 #0.025 #0.0225  # offset of lidar
         correctionZ -= (0.17 + 0.05)  #0.1825 Lidar offset
         print("X = ",correctionX, "\nZ = ", correctionZ)
@@ -152,9 +153,9 @@ class MyRobot(urx.Robot):
         time.sleep(2)
         self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
         time.sleep(2)
-#        self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
         time.sleep(2)
-#        self.translate_tool((0, -d_vertical, 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, -d_vertical, 0), acc=self.acc, vel=self.vel)
         self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
 
         
@@ -167,6 +168,7 @@ class MyRobot(urx.Robot):
     #    '''
         myrobot.mylidar.disconnect()
         print("Tape movement done! \n")
+
     
     
 if __name__ == "__main__":
@@ -197,7 +199,6 @@ if __name__ == "__main__":
 #    myrobot.tapeStation()
 #    myrobot.tape_movement()
 #    myrobot.move_to_middle()
-
     try:
 #            print(i, ": ", myrobot.tape_movement())
 #        myrobot.tape_movement()
@@ -205,10 +206,10 @@ if __name__ == "__main__":
 
 
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
-        for i in range(2, 17): #35
+        for i in range(1, 76): #35
 #            if (18 > i => 20 ):
             if not (17 <= i <20): # not on 18, 19 and 20. Because of woodenbeam
-                myrobot.tape_station()
+                #myrobot.tape_station()
                 print(i, "th tape motion of the 76." )
 #                toolpose = myrobot.getl()
     #            print("Current Toolpose : ", toolpose)
@@ -216,7 +217,7 @@ if __name__ == "__main__":
                 y = -math.cos(np.deg2rad(360/76* i))*radius + middleStatorPose[1]
                 z = middleStatorPose[2] -0.03 #-0.2
                 rz = - np.deg2rad(360/76 * i)
-                
+
                 # Necessary with rotvectors. Past pi it needs to start at 0 again. 
                 if rz >= pi :
                     invert = True
@@ -226,7 +227,7 @@ if __name__ == "__main__":
                 # Pose between OGV's
                 pose = [x,y,z,0,0,rz] #x-0.345
                 myrobot.movel(pose, acc=a, vel=v)
-                myrobot.tape_movement()
+                #myrobot.tape_movement()
 
 #   '''
     finally:

@@ -140,7 +140,7 @@ class MyRPLidar(RPLidar):
         scan = self.scanner()
         vane = []
         for row in scan:
-            if 80 < row[1] < 100 and row[2] < 500:
+            if 77.5 < row[1] < 102.5 and row[2] < 500:
                 vane.append(row)
         vane = np.array(vane)
         minimum_index = np.argmin(vane[:, 2])

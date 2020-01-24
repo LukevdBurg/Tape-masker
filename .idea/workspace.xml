@@ -16,44 +16,45 @@
     <session id="-1929278866">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.0" value="1" />
+          <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.3" value="1" />
           <entry key="project.open.time.6" value="1" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.opened" value="4" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="753" />
-          <entry key="txt" value="169" />
+          <entry key="py" value="1106" />
+          <entry key="txt" value="179" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="169" />
-          <entry key="Python" value="753" />
+          <entry key="PLAIN_TEXT" value="179" />
+          <entry key="Python" value="1106" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="13" />
+          <entry key="py" value="17" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="13" />
+          <entry key="Python" value="17" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
-    <leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Circle.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1036">
-              <caret line="80" column="8" selection-start-line="80" selection-start-column="8" selection-end-line="80" selection-end-column="8" />
+            <state relative-caret-position="143">
+              <caret line="208" column="28" selection-start-line="208" selection-start-column="28" selection-end-line="208" selection-end-column="28" />
               <folding>
                 <element signature="e#90#100#0" expanded="true" />
               </folding>
@@ -64,8 +65,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lidar_circle.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
-              <caret line="86" column="49" selection-start-line="86" selection-start-column="49" selection-end-line="86" selection-end-column="49" />
+            <state relative-caret-position="89">
+              <caret line="142" column="19" selection-start-line="142" selection-start-column="19" selection-end-line="142" selection-end-column="19" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
                 <element signature="e#515#821#0" />
@@ -76,10 +77,19 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/rplidar.py">
+        <entry file="file://$PROJECT_DIR$/Lidar/find center.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="52">
-              <caret line="423" column="8" selection-start-line="423" selection-start-column="8" selection-end-line="423" selection-end-column="8" />
+            <state relative-caret-position="357">
+              <caret line="32" column="44" lean-forward="true" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Lidar/find center ellips.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="17">
+              <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
             </state>
           </provider>
         </entry>
@@ -125,6 +135,11 @@
             <path>
               <item name="Tape-masker" type="b2602c69:ProjectViewProjectNode" />
               <item name="Tape-masker" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Tape-masker" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Tape-masker" type="462c0819:PsiDirectoryNode" />
+              <item name="Lidar" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -179,7 +194,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="GUI-Resize" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="find center ellips" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Tape-masker" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -187,11 +202,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/GUI" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Lidar" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/GUI/GUI-Resize.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Lidar/find center ellips.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -200,7 +215,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="lidar" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="find center" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="Tape-masker" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -208,11 +223,11 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Lidar" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lidar.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Lidar/find center.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -264,19 +279,19 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.GUI-Resize" />
-      <item itemvalue="Python.lidar" />
       <item itemvalue="Python.test vane (1)" />
       <item itemvalue="Python.Circle" />
       <item itemvalue="Python.lidar_circle" />
+      <item itemvalue="Python.find center" />
+      <item itemvalue="Python.find center ellips" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.Circle" />
-        <item itemvalue="Python.lidar_circle" />
-        <item itemvalue="Python.lidar" />
-        <item itemvalue="Python.GUI-Resize" />
+        <item itemvalue="Python.find center ellips" />
+        <item itemvalue="Python.find center" />
         <item itemvalue="Python.test vane (1)" />
+        <item itemvalue="Python.lidar_circle" />
       </list>
     </recent_temporary>
   </component>
@@ -333,7 +348,14 @@
       <option name="project" value="LOCAL" />
       <updated>1579779857415</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="bug fixing">
+      <created>1579794951568</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1579794951568</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -387,7 +409,8 @@
     <MESSAGE value="added extra function to find the middle" />
     <MESSAGE value="divided by 1000" />
     <MESSAGE value="changed polarity" />
-    <option name="LAST_COMMIT_MESSAGE" value="changed polarity" />
+    <MESSAGE value="bug fixing" />
+    <option name="LAST_COMMIT_MESSAGE" value="bug fixing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -422,10 +445,34 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/test vane.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Lidar/find center ellips.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="1" column="9" selection-start-line="1" selection-start-column="9" selection-end-line="1" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/rplidar.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2890">
+          <caret line="213" selection-start-line="213" selection-end-line="213" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Lidar/find center.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="32" column="44" lean-forward="true" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lidar_circle.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="86" column="49" selection-start-line="86" selection-start-column="49" selection-end-line="86" selection-end-column="49" />
+        <state relative-caret-position="89">
+          <caret line="142" column="19" selection-start-line="142" selection-start-column="19" selection-end-line="142" selection-end-column="19" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
             <element signature="e#515#821#0" />
@@ -434,17 +481,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/rplidar.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="52">
-          <caret line="423" column="8" selection-start-line="423" selection-start-column="8" selection-end-line="423" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Circle.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1036">
-          <caret line="80" column="8" selection-start-line="80" selection-start-column="8" selection-end-line="80" selection-end-column="8" />
+        <state relative-caret-position="143">
+          <caret line="208" column="28" selection-start-line="208" selection-start-column="28" selection-end-line="208" selection-end-column="28" />
           <folding>
             <element signature="e#90#100#0" expanded="true" />
           </folding>
