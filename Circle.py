@@ -71,11 +71,11 @@ class MyRobot(urx.Robot):
             pose[0] += delta_x #+ 0.061#+0.02 #+ 0.061 # deltaX + offset of lidar
             pose[1] += delta_y #+0.02# + 0.0185 # deltaY + offset of lidar
             self.movel(pose, acc=self.acc/2, vel=self.vel)
-#        pose[1] -=0.001
-#        pose[0] +=0.061-0.0229
+        pose[1] -=0.001
+        pose[0] +=0.061-0.0229
         #rotate so that tip EOAT is in LIDAR pose    
-#        pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
-#        self.movel(pose, acc=self.acc, vel=self.vel)
+        pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
+        self.movel(pose, acc=self.acc, vel=self.vel)
         print("Done calibrating center! \n")
        
     
