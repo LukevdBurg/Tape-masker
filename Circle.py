@@ -206,7 +206,7 @@ if __name__ == "__main__":
 
 
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
-        for i in range(1, 76): #35
+        for i in range(2, 17): #35
 #            if (18 > i => 20 ):
             if not (17 <= i <20): # not on 18, 19 and 20. Because of woodenbeam
                 #myrobot.tape_station()
@@ -227,7 +227,7 @@ if __name__ == "__main__":
                 # Pose between OGV's
                 pose = [x,y,z,0,0,rz] #x-0.345
                 myrobot.movel(pose, acc=a, vel=v)
-                #myrobot.tape_movement()
+                myrobot.tape_movement()
 
 #   '''
     finally:
