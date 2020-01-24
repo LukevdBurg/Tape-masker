@@ -27,9 +27,10 @@ class MyRobot(urx.Robot):
         print ("Deleted")
         
     def on_startup(self):
+        gripper_pin = 0
         # Start position with all joints within limits
         print("Going to startup pose! \n")
-        self.movel((0, 0, -0.15, 0, 0, 0), acc=self.acc, vel=self.vel, relative=True)
+        self.set_digital_out(gripper_pin, True) #Gripper closed
         self.movej(self.safe_jpos, acc=self.acc, vel=self.vel)
         
         
@@ -85,7 +86,6 @@ class MyRobot(urx.Robot):
         gripper_pin = 0
         servo_pin = 1
         hold_tape_pin = 2
-        self.set_digital_out(gripper_pin, False) #Gripper closed
         self.set_digital_out(servo_pin, False) #Close servo
         self.set_digital_out(hold_tape_pin, False) #Close servo
         v = 0.05
@@ -96,12 +96,14 @@ class MyRobot(urx.Robot):
     #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.906 , -1.154 , -2.172 , -1.388 , 1.571 , -1.234] #starting J pose
         grabTapePose = [ 0.058 , 0.457 , 0.216 , 2.222 , 2.219 , -0.001] #Grabbing pose
-        forwardTapePose = [0.065 , 0.457 , 0.072 , 2.222 , 2.219 , -0.001] #move forward and flatten 0.062
+        forwardTapePose = [0.065 , 0.457 , 0.077 , 2.222 , 2.219 , -0.001] #move forward and flatten 0.062
 
         
         # Movements
     #    self.move_to_middle() # Go to middle of motor at start and end
         self.movej(stationJPose, acc=a,vel=v*2) #JPose near the station
+        self.set_digital_out(gripper_pin, False) #Gripper closed
+
         self.movel(grabTapePose, acc=a,vel=v)  #Go to grab tape
         time.sleep(2) #Remove when gripper connected
     #    closeGripper()
@@ -110,13 +112,11 @@ class MyRobot(urx.Robot):
         
         self.movel(forwardTapePose, acc=a,vel=v)   #Pull tapeforward
         self.set_digital_out(hold_tape_pin, True) #Hold tape pneuma
-        
-        
 #        Closepusher
-        self.translate_tool((0, 0, 0.02), acc=a, vel=v) #move forward for 
+        self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
         self.set_digital_out(servo_pin, True) #Close servo
         
-        forwardTapePose[0] -= 0.005 #dont know check!
+        forwardTapePose[0] -= 0.1#dont know check!
         self.movel(forwardTapePose, acc=a,vel=v)
         time.sleep(1.5) #Remove when servo connected
         self.movej(stationJPose, acc=a,vel=v*2) #JPose near the station
@@ -138,7 +138,7 @@ class MyRobot(urx.Robot):
         
         # Taping movement
         print("Tape movement!")
-        d_horizontal = 0.14#0.14 #Forward distance
+        d_horizontal = 0.15#0.14 #Forward distance
         d_vertical = 0.02 #Pushing down distance
         ogvAngle = np.deg2rad(9) #Horizontal angle of the OGV's
 
@@ -174,6 +174,7 @@ class MyRobot(urx.Robot):
         time.sleep(2)
         
         self.translate_tool((0, -d_vertical, 0), acc=self.acc, vel=self.vel)
+        self.set_digital_out(gripper_pin, True)  # Hold tape pneuma
         self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
 
         
@@ -193,7 +194,7 @@ if __name__ == "__main__":
     #Configure Robot
     logging.basicConfig(level=logging.WARN)
 #    rob = urx.Robot("192.168.1.102", True)
-    myrobot = MyRobot("192.168.1.102", 'COM4')
+    myrobot = MyRobot("192.168.1.102", 'COM3')
     myrobot.mylidar.disconnect()
     time.sleep(1)
     v = 0.1
