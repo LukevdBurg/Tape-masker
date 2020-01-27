@@ -1,9 +1,9 @@
 import socket
-import urx
 from tkinter import *
 from tkinter.font import Font
 from tkinter.messagebox import showerror
 
+import urx
 from PIL import Image, ImageTk
 
 from Circle import MyRobot
@@ -45,6 +45,9 @@ class MyApp():
         self.footer_frame = Frame(self.myParent, bg='#00A1E4')
         self.footer_frame.grid(row=3, column=0, sticky=NSEW)
 
+        self.demo_frame = Frame(self.myParent, bg='#00A1E4')
+        self.demo_frame.grid(row=4, column=0, sticky=NSEW)
+
         # self.logo_frame.grid_rowconfigure(0, weight=1)
         self.logo_frame.grid_columnconfigure(0, weight=1)
         self.logo_frame.grid_columnconfigure(1, weight=1)
@@ -63,6 +66,8 @@ class MyApp():
         self.coord_frame.grid_columnconfigure(3, weight=1)
 
         self.footer_frame.grid_columnconfigure(0, weight=1)
+
+        self.demo_frame.grid_rowconfigure(0, weight=1)
 
         self.head_label = Label(self.logo_frame, text='KLM TAPE MASKING ROBOT', padx=25, pady=25)
         self.head_label.configure(font=mytitleFont, bg='#00A1E4', foreground='white')
@@ -108,6 +113,11 @@ class MyApp():
         self.console = Text(self.footer_frame, height=15)
         self.console.grid(column=0, row=0, pady=5, padx=25, sticky='EWNS')
 
+        self.demo_state = IntVar()
+        self.demo = Checkbutton(self.demo_frame, bg='#00A1E4', text='Demo',
+                                variable=self.demo, onvalue=1, offvalue=0)
+        self.demo.grid(column=1, row=0, pady=5, padx=25)
+
     def console_print(self, text):
         self.console.insert(END, text)
 
@@ -132,7 +142,12 @@ class MyApp():
         start_clicked = 0
         if self.buttons[0]["text"] == 'Start':
             start_clicked = 1
-            self.console_print("Robot starting with masking \n")
+            if self.demo_state == 1:
+                self.myrobot.demo()
+                self.console_print("Robot starting in Demo mode")
+            else:
+                self.console_print("Robot starting with masking \n")
+                self.myrobot.run()
 
         if self.buttons[0]["text"] == 'Connect':
             try:
