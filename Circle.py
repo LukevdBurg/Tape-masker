@@ -13,14 +13,20 @@ from math import pi, cos, sin, acos
 import math 
 import lidar_circle as lidar
 
+#phi = 0.0
+DIAMETER = 0.975 + 2 * 0.017 + 0.03  # #Was:1.015+0.1
+RADIUS = DIAMETER / 2
+
 class MyRobot(urx.Robot):
     # TODO Make it optional to start with the safe pose
     def __init__(self, host, port):
         super().__init__(host)
         self.mylidar = lidar.MyRPLidar(port)
         self.safe_jpos = ([0.283, -0.416, -2.305, 1.152, 1.571, -0.283])
-        self.acc = 0.3
-        self.vel = 0.1
+        self.acc = 0.1
+        self.vel = 0.2
+        self.correctionX = 0.0
+        self.correctionZ = 0.0
 
             
     def __del__(self):
@@ -74,6 +80,7 @@ class MyRobot(urx.Robot):
             self.movel(pose, acc=self.acc/2, vel=self.vel)
         pose[1] -=0.001
         pose[0] +=0.061-0.0229
+        pose[2] -=0.1
         #rotate so that tip EOAT is in LIDAR pose    
         pose = [pose[0], pose[1], pose[2], 0, 0, -1.57]
         self.movel(pose, acc=self.acc, vel=self.vel)
@@ -91,16 +98,16 @@ class MyRobot(urx.Robot):
         v = 0.05
         a = 0.03
         
-        self.movel((0, 0, -0.15, 0, 0, 0), acc=a, vel=v, relative=True)
+        #self.movel((0, 0, -0.15, 0, 0, 0), acc=a, vel=v, relative=True)
         #Hardcoded poses of the station
     #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
-        stationJPose = [1.906 , -1.154 , -2.172 , -1.388 , 1.571 , -1.234] #starting J pose
-        grabTapePose = [ 0.058 , 0.457 , 0.216 , 2.222 , 2.219 , -0.001] #Grabbing pose
-        forwardTapePose = [0.065 , 0.457 , 0.077 , 2.222 , 2.219 , -0.001] #move forward and flatten 0.062
+        stationJPose = [1.9059884629302861 , -1.1397081872494461 , -2.0799622606546024 , -1.4943256110586116 , 1.5710074217261376 , -1.234022953675229] #starting J pose
+        grabTapePose = [ 0.058 , 0.445 , 0.22 , 2.222 , 2.219 , -0.001] #Grabbing pose
+        forwardTapePose = [0.065 , 0.445 , 0.082 , 2.222 , 2.219 , -0.001] #move forward and flatten 0.062
 
         
         # Movements
-    #    self.move_to_middle() # Go to middle of motor at start and end
+        #self.move_to_middle() # Go to middle of motor at start and end
         self.movej(stationJPose, acc=a,vel=v*2) #JPose near the station
         self.set_digital_out(gripper_pin, False) #Gripper closed
 
@@ -113,17 +120,20 @@ class MyRobot(urx.Robot):
         self.movel(forwardTapePose, acc=a,vel=v)   #Pull tapeforward
         self.set_digital_out(hold_tape_pin, True) #Hold tape pneuma
 #        Closepusher
-        self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
+        self.movel([forwardTapePose[0]+.002, forwardTapePose[1], forwardTapePose[2]-0.005,forwardTapePose[3],forwardTapePose[4],forwardTapePose[5]],acc=a,vel=v)
+        #self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
+
         self.set_digital_out(servo_pin, True) #Close servo
         
         forwardTapePose[0] -= 0.1#dont know check!
         self.movel(forwardTapePose, acc=a,vel=v)
+        '''
         time.sleep(1.5) #Remove when servo connected
         self.movej(stationJPose, acc=a,vel=v*2) #JPose near the station
         self.movej(middleStatorJPose, acc=self.acc, vel=self.vel * 2)
         
         self.set_digital_out(hold_tape_pin, False) #Hold tape pneuma
-        print("Tapestation done \n")
+        print("Tapestation done \n")'''
     
     
     def move_to_middle(self):
@@ -132,26 +142,26 @@ class MyRobot(urx.Robot):
 #        self.movej(middleStatorJPose, acc=self.acc, vel=self.vel * 2)
         self.movel(middleStatorPose, acc=self.acc, vel=self.vel)
         
-    def tape_movement(self):
+    def tape_movement(self, i):
         gripper_pin = 0
         servo_pin = 1
-        
         # Taping movement
         print("Tape movement!")
         d_horizontal = 0.15#0.14 #Forward distance
         d_vertical = 0.02 #Pushing down distance
         ogvAngle = np.deg2rad(9) #Horizontal angle of the OGV's
+        if not i % 5:
+    #             #Get correction distances from LIDAR
+            self.correctionX, self.correctionZ = self.mylidar.find_vanes()
+            print("X = ",self.correctionX, "\nZ = ", self.correctionZ)
+            time.sleep(0.5)
+    #       correctionX = -correctionX
+            self.correctionX += 0.006 #0.025 #0.0225  # offset of lidar
+            self.correctionZ -= (0.17 + 0.05)  #0.1825 Lidar offset
+            print("X = ",self.correctionX, "\nZ = ", self.correctionZ)
 
-#             #Get correction distances from LIDAR
-        correctionX, correctionZ = self.mylidar.find_vanes()
-        print("X = ",correctionX, "\nZ = ", correctionZ)
-        time.sleep(0.5)
-#       correctionX = -correctionX
-        correctionX += 0.006 #0.025 #0.0225  # offset of lidar
-        correctionZ -= (0.17 + 0.05)  #0.1825 Lidar offset
-        print("X = ",correctionX, "\nZ = ", correctionZ)
-       
-        self.translate_tool((correctionX, 0, correctionZ), acc=self.acc, vel=self.vel)
+
+        self.translate_tool((self.correctionX, 0, self.correctionZ), acc=self.acc, vel=self.vel)
     
     #    Rotate the EOAT horizontal in line with the OGV's
         time.sleep(0.5)
@@ -167,13 +177,13 @@ class MyRobot(urx.Robot):
         time.sleep(2)
         self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
         time.sleep(2)
-        self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
+        #self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
         
         self.set_digital_out(gripper_pin, False) #Hold tape pneuma        
         self.set_digital_out(servo_pin, False) #Close servo
         time.sleep(2)
         
-        self.translate_tool((0, -d_vertical, 0), acc=self.acc, vel=self.vel)
+        #self.translate_tool((0, -d_vertical, 0), acc=self.acc, vel=self.vel)
         self.set_digital_out(gripper_pin, True)  # Hold tape pneuma
         self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
 
@@ -189,7 +199,7 @@ class MyRobot(urx.Robot):
         print("Tape movement done! \n")
 
     
-    
+
 if __name__ == "__main__":
     #Configure Robot
     logging.basicConfig(level=logging.WARN)
@@ -197,43 +207,48 @@ if __name__ == "__main__":
     myrobot = MyRobot("192.168.1.102", 'COM3')
     myrobot.mylidar.disconnect()
     time.sleep(1)
-    v = 0.1
+    v = 0.2
     a = 0.3
-    diameter = 0.975 + 2*0.017 + 0.03#  #Was:1.015+0.1
-    radius = diameter / 2
+
     invert = False
 #
 #    x, z = lidar.find_vane()
 #    print("X = ",x, "\nZ = ", z)
-    
+    #middleStatorPose = myrobot.getl()
     myrobot.on_startup() #Joint move in middle of joint limits UR10
-    myrobot.calibrate_to_center() #Get center with LIDAR
-    middleStatorPose = myrobot.getl()
-    middleStatorJPose = myrobot.getj()
-    print("Current Toolpose : ", middleStatorPose[0],",",middleStatorPose[1],
-          ",",middleStatorPose[2],",",middleStatorPose[3],",",middleStatorPose[4],
-          ",",middleStatorPose[5])
-#    middleStatorPose = [-0.22125550777766975 , -0.2216703085172856 , 0.9501686433671546 , 0.0001417514385128543 , -2.918742915754314e-05 , -1.5700249372510269] #remove when using LIDAR
+    #myrobot.calibrate_to_center() #Get center with LIDAR
+    #middleStatorPose = myrobot.getj()
+    #middleStatorJPose = myrobot.getj()
+    #print("Current Toolpose : ", middleStatorPose[0],",",middleStatorPose[1],
+    #      ",",middleStatorPose[2],",",middleStatorPose[3],",",middleStatorPose[4],
+    #     ",",middleStatorPose[5])
+    stationJPose = [1.9059884629302861 , -1.1397081872494461 , -2.0799622606546024 , -1.4943256110586116 , 1.5710074217261376 , -1.234022953675229]  # starting J pose
+    middleStatorPose = [-0.20425021588029 , -0.16873647189096627 , 0.800126526162701 , 0.00023370321567888587 , -3.243348589822535e-05 , -1.5699666275861346] #remove when using LIDAR
+    middlePose = [middleStatorPose[0]+0.2, middleStatorPose[1], middleStatorPose[2] - 0.15, -1.208, 1.208, -1.208]
 
+
+    myrobot.movel(middleStatorPose, acc=a, vel=v)
+    #myrobot.movel(middlePose, acc=a, vel=v)
+    #myrobot.movej(stationJPose, acc=a, vel=v * 2)  # JPose near the station
 #    myrobot.tapeStation()
 #    myrobot.tape_movement()
 #    myrobot.move_to_middle()
     try:
 #            print(i, ": ", myrobot.tape_movement())
 #        myrobot.tape_movement()
-
+        #myrobot.tape_station()
 
 
 #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
         for i in range(2, 17): #35
 #            if (18 > i => 20 ):
             if not (17 <= i <20): # not on 18, 19 and 20. Because of woodenbeam
-                myrobot.tape_station()
+                #myrobot.tape_station()
                 print(i, "th tape motion of the 76." )
 #                toolpose = myrobot.getl()
     #            print("Current Toolpose : ", toolpose)
-                x = -math.sin(np.deg2rad(360/76* i))*radius + middleStatorPose[0]
-                y = -math.cos(np.deg2rad(360/76* i))*radius + middleStatorPose[1]
+                x = -math.sin(np.deg2rad(360/76* i))*RADIUS + middleStatorPose[0]
+                y = -math.cos(np.deg2rad(360/76* i))*RADIUS + middleStatorPose[1]
                 z = middleStatorPose[2] -0.03 #-0.2
                 rz = - np.deg2rad(360/76 * i)
 
@@ -246,7 +261,7 @@ if __name__ == "__main__":
                 # Pose between OGV's
                 pose = [x,y,z,0,0,rz] #x-0.345
                 myrobot.movel(pose, acc=a, vel=v)
-                myrobot.tape_movement()
+                myrobot.tape_movement(i-2)
 
 #   '''
     finally:
