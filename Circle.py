@@ -200,6 +200,38 @@ class MyRobot(urx.Robot):
         self.mylidar.disconnect()
         print("Tape movement done! \n")
 
+    def demo(self):
+        print("Demo mode started!")
+        self.myrobot.mylidar.disconnect()
+        v = 0.1
+        a = 0.1
+        invert = False
+        
+        self.on_startup() #Joint move in middle of joint limits UR10
+        self.calibrate_to_center() #Get center with LIDAR
+        middleStatorPose = self.getl()
+        
+        try:
+            for i in range(2, 16): #35
+                print(i, "th tape motion of the 76." )
+                x = -math.sin(np.deg2rad(360/76* i))*self.radius + middleStatorPose[0]
+                y = -math.cos(np.deg2rad(360/76* i))*self.radius + middleStatorPose[1]
+                z = middleStatorPose[2] -0.03 #-0.2
+                rz = - np.deg2rad(360/76 * i)
+    
+                # Necessary with rotvectors. Past pi it needs to start at 0 again. 
+                if rz >= pi :
+                    invert = True
+                if invert == True:
+                    rz =-rz
+                
+                # Pose between OGV's
+                pose = [x,y,z,0,0,rz] #x-0.345
+                self.movel(pose, acc=a, vel=v)
+                self.tape_movement(0)
+        finally:
+            print("Demo finished!")
+            self.close()
     
 
     def run(self):
@@ -210,59 +242,45 @@ class MyRobot(urx.Robot):
         time.sleep(1)
         v = 0.2
         a = 0.3
-
         invert = False
-    #
-    #    x, z = lidar.find_vane()
-    #    print("X = ",x, "\nZ = ", z)
+
         #middleStatorPose = self.getl()
         self.on_startup() #Joint move in middle of joint limits UR10
         #self.calibrate_to_center() #Get center with LIDAR
-        #middleStatorPose = self.getj()
+        
+        #middleStatorPose = self.getl()
         #middleStatorJPose = self.getj()
         #print("Current Toolpose : ", middleStatorPose[0],",",middleStatorPose[1],
         #      ",",middleStatorPose[2],",",middleStatorPose[3],",",middleStatorPose[4],
         #     ",",middleStatorPose[5])
+        
         self.stationJPose = [1.9059884629302861 , -1.1397081872494461 , -2.0799622606546024 , -1.4943256110586116 , 1.5710074217261376 , -1.234022953675229]  # starting J pose
         self.middleStatorPose = [-0.20425021588029 , -0.16873647189096627 , 0.800126526162701 , 0.00023370321567888587 , -3.243348589822535e-05 , -1.5699666275861346] #remove when using LIDAR
         self.middlePose = [self.middleStatorPose[0]+0.2, self.middleStatorPose[1], self.middleStatorPose[2] - 0.15, -1.208, 1.208, -1.208]
 
 
         self.movel(self.middleStatorPose, acc=a, vel=v)
-        #self.movel(middlePose, acc=a, vel=v)
-        #self.movej(stationJPose, acc=a, vel=v * 2)  # JPose near the station
-    #    self.tapeStation()
-    #    self.tape_movement()
-    #    self.move_to_middle()
+
         try:
-    #            print(i, ": ", self.tape_movement())
-    #        self.tape_movement()
-            #self.tape_station()
-
-
-    #        rob.movej(middleStatorJPose, acc=a, vel=v*2)
             for i in range(2, 16): #35
-    #            if (18 > i => 20 ):
-                if not (17 <= i <20): # not on 18, 19 and 20. Because of woodenbeam
-                    #self.tape_station()
-                    print(i, "th tape motion of the 76." )
-    #                toolpose = self.getl()
-        #            print("Current Toolpose : ", toolpose)
-                    x = -math.sin(np.deg2rad(360/76* i))*self.radius + self.middleStatorPose[0]
-                    y = -math.cos(np.deg2rad(360/76* i))*self.radius + self.middleStatorPose[1]
-                    z = self.middleStatorPose[2] -0.03 #-0.2
-                    rz = - np.deg2rad(360/76 * i)
+                #self.tape_station()
+                print(i, "th tape motion of the 76." )
+                
+                x = -math.sin(np.deg2rad(360/76* i))*self.radius + self.middleStatorPose[0]
+                y = -math.cos(np.deg2rad(360/76* i))*self.radius + self.middleStatorPose[1]
+                z = self.middleStatorPose[2] -0.03 #-0.2
+                rz = - np.deg2rad(360/76 * i)
 
-                    # Necessary with rotvectors. Past pi it needs to start at 0 again.
-                    if rz >= pi :
-                        invert = True
-                    if invert == True:
-                        rz =-rz
+                # Necessary with rotvectors. Past pi it needs to start at 0 again.
+                if rz >= pi :
+                    invert = True
+                if invert == True:
+                    rz =-rz
 
-                    # Pose between OGV's
-                    pose = [x,y,z,0,0,rz] #x-0.345
-                    self.movel(pose, acc=a, vel=v)
-                    self.tape_movement(i-2)
+                # Pose between OGV's
+                pose = [x,y,z,0,0,rz] #x-0.345
+                self.movel(pose, acc=a, vel=v)
+                self.tape_movement(i-2)
 
     #   '''
         finally:
