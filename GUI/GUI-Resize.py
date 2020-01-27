@@ -115,7 +115,7 @@ class MyApp():
 
         self.demo_state = IntVar()
         self.demo = Checkbutton(self.demo_frame, bg='#00A1E4', text='Demo',
-                                variable=self.demo, onvalue=1, offvalue=0)
+                                variable=self.demo_state, onvalue=1, offvalue=0)
         self.demo.grid(column=1, row=0, pady=5, padx=25)
 
     def console_print(self, text):
@@ -142,12 +142,6 @@ class MyApp():
         start_clicked = 0
         if self.buttons[0]["text"] == 'Start':
             start_clicked = 1
-            if self.demo_state == 1:
-                self.myrobot.demo()
-                self.console_print("Robot starting in Demo mode")
-            else:
-                self.console_print("Robot starting with masking \n")
-                self.myrobot.run()
 
         if self.buttons[0]["text"] == 'Connect':
             try:
@@ -164,8 +158,13 @@ class MyApp():
                 self.buttons[0].configure(text='Start')
 
         if start_clicked == 1:
-            self.myrobot.on_startup()
             self.buttons[0].configure(state='disabled')
+            if self.demo_state == 1:
+                self.myrobot.demo()
+                self.console_print("Robot starting in Demo mode")
+            else:
+                self.console_print("Robot starting with masking \n")
+                self.myrobot.run()
 
     def button_stop_click(self):
         # TODO stop the robot
