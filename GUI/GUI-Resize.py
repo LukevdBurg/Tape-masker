@@ -18,7 +18,7 @@ class MyApp():
         mylabel_coordFont = Font(family="Arial", size=12)
         mybuttonFont = Font(family='Arial', size=12)
 
-        img = Image.open('D:\Documents\SMR2\klm-embleme.jpg')
+        img = Image.open('D:\Documents\Tape-masker\klm-embleme.jpg')
         img = img.resize((160, 100), Image.ANTIALIAS)
         logo = ImageTk.PhotoImage(img)
 
