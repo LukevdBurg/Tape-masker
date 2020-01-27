@@ -18,6 +18,7 @@ DIAMETER = 0.975 + 2 * 0.017 + 0.03  # #Was:1.015+0.1
 RADIUS = DIAMETER / 2
 
 class MyRobot(urx.Robot):
+    # TODO Make it optional to start with the safe pose
     def __init__(self, host, port):
         super().__init__(host)
         self.mylidar = lidar.MyRPLidar(port)
