@@ -160,8 +160,8 @@ class MyApp():
         if start_clicked == 1:
             self.buttons[0].configure(state='disabled')
             if self.demo_state == 1:
-                self.myrobot.demo()
                 self.console_print("Robot starting in Demo mode")
+                self.myrobot.demo()
             else:
                 self.console_print("Robot starting with masking \n")
                 self.myrobot.run()
