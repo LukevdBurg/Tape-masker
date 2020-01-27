@@ -3,6 +3,9 @@ from tkinter import *
 from tkinter.font import Font
 from tkinter.messagebox import showerror
 
+import threading
+import queue
+
 import urx
 from PIL import Image, ImageTk
 
@@ -125,8 +128,9 @@ class MyApp():
         if i == 0:
             if self.buttons[0]["text"] == 'Start':
                 self.console_print("Start button clicked \n")
+                self.thread_queue = queue.Queue()
             else:
-                self.console_print("Start button clicked \n")
+                self.console_print("Connect button clicked \n")
             self.button_start_click()
         elif i == 1:
             self.console_print("Stop button clicked \n")
@@ -161,7 +165,9 @@ class MyApp():
             self.buttons[0].configure(state='disabled')
             if self.demo_state == 1:
                 self.console_print("Robot starting in Demo mode")
-                self.myrobot.demo()
+                self.new_thread = threading.Thread(target=self.myrobot.demo(), kwargs={'thread-queue':self.new_thread})
+                self.new_thread.start()
+                self.after(100, self.listen_for_result())
             else:
                 self.console_print("Robot starting with masking \n")
                 self.myrobot.run()
@@ -183,6 +189,11 @@ class MyApp():
         self.console_print("Shutting down \n")
         root.destroy()
 
+    def listen_for_result(self):
+        try:
+            self.res = self.thread_queue.get(0)
+        except queue.Empty:
+            self.after(100, self.listen_for_result())
 
 root = Tk()
 myapp = MyApp(root)
