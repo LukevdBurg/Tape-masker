@@ -151,7 +151,7 @@ class MyRobot(urx.Robot):
         servo_pin = 1
         # Taping movement
         print("Tape movement!")
-        d_horizontal = 0.15#0.14 #Forward distance
+        d_horizontal = 0.155#0.14 #Forward distance
         d_vertical = 0.0155 #Pushing down distance
         ogvAngle = np.deg2rad(9) #Horizontal angle of the OGV's
         if not i % 3:
