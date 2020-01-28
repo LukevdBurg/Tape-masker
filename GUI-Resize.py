@@ -163,22 +163,25 @@ class MyApp:
 
         if start_clicked == 1:
             self.buttons[0].configure(state='disabled')
-            if self.demo_state == 1:
-                self.console_print("Robot starting in Demo mode")
+            if self.demo_state.get() == 1:
+                self.console_print("Robot starting in Demo mode \n")
                 self.new_thread = Thread(target=self.myrobot.demo, kwargs={'thread_queue':self.thread_queue})
                 self.new_thread.start()
-                self.after(100, self.listen_for_result)
+                self.myParent.after(100, self.listen_for_result)
             else:
                 self.console_print("Robot starting with masking \n")
                 self.new_thread = Thread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
                 self.new_thread.start()
-                self.after(100, self.listen_for_result)
+                self.myParent.after(100, self.listen_for_result)
 
     def button_stop_click(self):
         # TODO stop the robot
         self.buttons[0].configure(state="normal")
+        self.myrobot.mylidar.stop_motor()
+        self.myrobot.mylidar.stop()
         self.myrobot.stopl()
         self.myrobot.stop()
+        #self.new_thread.join()
 
     def button_reset_click(self):
         # TODO set everything back to begin state
@@ -197,7 +200,7 @@ class MyApp:
         try:
             self.res = self.thread_queue.get(0)
         except queue.Empty:
-            self.root.after(100, self.listen_for_result)
+            self.myParent.after(100, self.listen_for_result)
 
 
 root = Tk()

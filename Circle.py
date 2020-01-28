@@ -9,9 +9,6 @@ import logging
 import numpy as np
 import time
 
-#import queue
-#import threading
-
 from math import pi, cos, sin, acos
 import math 
 import lidar_circle as lidar
@@ -206,9 +203,9 @@ class MyRobot(urx.Robot):
         self.mylidar.disconnect()
         print("Tape movement done! \n")
 
-    def demo(self):
+    def demo(self, thread_queue=None):
         print("Demo mode started!")
-        self.myrobot.mylidar.disconnect()
+        #self.myrobot.mylidar.disconnect()
         v = 0.1
         a = 0.1
         invert = False
