@@ -1,15 +1,30 @@
+import queue
 import socket
+import threading
+from threading import Thread
 from tkinter import *
 from tkinter.font import Font
 from tkinter.messagebox import showerror
-
-from threading import Thread
-import queue
 
 import urx
 from PIL import Image, ImageTk
 
 from Circle import MyRobot
+
+
+class StoppableThread(threading.Thread):
+    """Thread class with a stop() method. The thread itself has to check
+    regularly for the stopped() condition."""
+
+    def __init__(self, *args, **kwargs):
+        super(StoppableThread, self).__init__(*args, **kwargs)
+        self._stop_event = threading.Event()
+
+    def stop(self):
+        self._stop_event.set()
+
+    def stopped(self):
+        return self._stop_event.is_set()
 
 
 class MyApp:
@@ -81,7 +96,7 @@ class MyApp:
         self.logo_label.image = logo
         self.logo_label.grid(row=0, column=1, sticky='EWNS')
 
-        mybuttons = ['Connect', 'Stop', 'Reset', 'Exit']
+        mybuttons = ['Connect', 'Reset', 'Exit']
         self.buttons = []
         for column_index, button in enumerate(mybuttons):
             self.buttons.append(Button(self.button_frame, text=button,
@@ -133,11 +148,11 @@ class MyApp:
                 self.console_print("Connect button clicked \n")
             self.button_start_click()
         elif i == 1:
-            self.console_print("Stop button clicked \n")
-            self.button_stop_click()
-        elif i == 2:
             self.console_print("Reset button clicked \n")
             self.button_reset_click()
+        elif i == 2:
+            self.console_print("Reset button clicked \n")
+            self.button_exit_click()
         elif i == 3:
             self.console_print("Exit button clicked \n")
             self.button_exit_click()
@@ -165,25 +180,35 @@ class MyApp:
             self.buttons[0].configure(state='disabled')
             if self.demo_state.get() == 1:
                 self.console_print("Robot starting in demo mode \n")
-                self.new_thread = Thread(target=self.myrobot.demo, kwargs={'thread_queue':self.thread_queue})
+                # self.new_thread = Thread(target=self.myrobot.demo, kwargs={'thread_queue': self.thread_queue})
+                self.new_thread = StoppableThread(target=self.myrobot.demo, kwargs={'thread_queue': self.thread_queue})
                 self.new_thread.setDaemon(True)
                 self.new_thread.start()
                 self.myParent.after(100, self.listen_for_result)
             else:
                 self.console_print("Robot starting with masking \n")
-                self.new_thread = Thread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
+                # self.new_thread = Thread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
+                self.new_thread = StoppableThread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
                 self.new_thread.start()
                 self.myParent.after(100, self.listen_for_result)
 
     def button_stop_click(self):
-        # TODO stop the robot
+        # TODO Fix the stop button with Thread interrupt
         self.buttons[0].configure(state="normal")
-        for i in range(5):
-            self.myrobot.mylidar.stop_motor()
-            self.myrobot.mylidar.stop()
-            self.myrobot.stopl()
-            self.myrobot.stop()
-        #self.new_thread.join()
+        # for i in range(5):
+        #     self.myrobot.mylidar.stop_motor()
+        #     self.myrobot.mylidar.stop()
+        #     self.myrobot.stopl()
+        #     self.myrobot.stop()
+        #     # self.new_thread.stop()
+        #     # self.new_thread.join()
+        self.myrobot.stop()
+        self.myrobot.mylidar.stop_motor()
+        self.myrobot.mylidar.stop()
+        self.new_thread.stop()
+        self.new_thread.join()
+        #self.myrobot.stopl()
+
 
     def button_reset_click(self):
         # TODO set everything back to begin state
@@ -208,4 +233,3 @@ class MyApp:
 root = Tk()
 myapp = MyApp(root)
 root.mainloop()
-
