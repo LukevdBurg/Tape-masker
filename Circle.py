@@ -158,7 +158,7 @@ class MyRobot(urx.Robot):
     #             #Get correction distances from LIDAR
             self.correctionX, self.correctionZ = self.mylidar.find_vanes()
             print("X = ",self.correctionX, "\nZ = ", self.correctionZ)
-            time.sleep(0.5)
+            #time.sleep(0.5)
     #       correctionX = -correctionX
             self.correctionX += 0.006 #0.025 #0.0225  # offset of lidar
             self.correctionZ -= (0.17 + 0.05)  #0.1825 Lidar offset
@@ -168,24 +168,25 @@ class MyRobot(urx.Robot):
         self.translate_tool((self.correctionX, 0, self.correctionZ), acc=self.acc, vel=self.vel)
     
     #    Rotate the EOAT horizontal in line with the OGV's
-        time.sleep(0.5)
-        rotateDistance = math.tan(ogvAngle) * 0.258 #0.252 + distEOAT + clearance 
+        #time.sleep(0.5)
+        rotateDistance = math.tan(ogvAngle) * 0.258 #0.252 + distEOAT + clearance
         self.translate_tool((rotateDistance, 0, 0), acc=self.acc, vel=self.vel)
-    
+
         t = self.get_pose()
         t.orient.rotate_yt(-ogvAngle)
+        print("T:",t)
         self.set_pose(t, vel=self.vel, acc=self.acc)
         
 
         # Go forward, Down, Up, and Back
-        time.sleep(2)
+
         self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
-        time.sleep(2)
+
         self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
         
         self.set_digital_out(gripper_pin, False) #Hold tape pneuma        
         self.set_digital_out(servo_pin, False) #Close servo
-        time.sleep(2)
+        time.sleep(0.5)
         
         self.translate_tool((0, -(d_vertical+.01), 0), acc=self.acc, vel=self.vel)
         self.set_digital_out(gripper_pin, True)  # Hold tape pneuma
@@ -193,7 +194,7 @@ class MyRobot(urx.Robot):
 
         
         #Rotate EOAT back
-        time.sleep(5)
+
         t = self.get_pose()
         t.orient.rotate_yt(ogvAngle)
         self.set_pose(t,  acc=self.acc, vel=self.vel)

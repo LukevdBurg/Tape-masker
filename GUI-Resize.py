@@ -149,7 +149,7 @@ class MyApp:
 
         if self.buttons[0]["text"] == 'Connect':
             try:
-                self.myrobot = MyRobot("192.168.1.102", 'COM3')
+                self.myrobot = MyRobot("192.168.1.102", "COM3")
             except socket.timeout as err:
                 showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
                 self.console_print("Connection error, try again... \n")
