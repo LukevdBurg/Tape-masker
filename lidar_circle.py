@@ -5,6 +5,7 @@ from rplidar import RPLidar
 class MyRPLidar(RPLidar):
     def __init__(self, port):
         super().__init__(port)
+        self.reset()
         self.port = port
 
     def scanner(self):
