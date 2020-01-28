@@ -1,13 +1,30 @@
-import tkinter.ttk as ttk
+import socket
 from tkinter import *
 from tkinter.font import Font
+from tkinter.messagebox import showerror
+
+from threading import Thread
+import queue
+
+import urx
+from PIL import Image, ImageTk
+
+from Circle import MyRobot
 
 
 class MyApp:
     def __init__(self, parent):
-        # ---Label font constants---
+        self.thread_queue = queue.Queue()
+
+        # ---Font constants---
+        mytitleFont = Font(family="Arial", size=16, weight="bold")
         mylabelFont = Font(family="Arial", size=14, weight="bold")
         mylabel_coordFont = Font(family="Arial", size=12)
+        mybuttonFont = Font(family='Arial', size=12)
+
+        img = Image.open('klm-embleme.jpg')
+        img = img.resize((160, 100), Image.ANTIALIAS)
+        logo = ImageTk.PhotoImage(img)
 
         self.myParent = parent
 
@@ -26,133 +43,164 @@ class MyApp:
         self.button_frame = Frame(self.myParent, bg='#00A1E4')
         self.button_frame.grid(row=1, column=0, sticky=NSEW)
 
-        self.progress_frame = Frame(self.myParent, bg='#00A1E4')
-        self.progress_frame.grid(row=2, column=0, sticky=NSEW)
-
         self.coord_frame = Frame(self.myParent, bg='#00A1E4')
-        self.coord_frame.grid(row=3, column=0, sticky=NSEW)
+        self.coord_frame.grid(row=2, column=0, sticky=NSEW)
 
         self.footer_frame = Frame(self.myParent, bg='#00A1E4')
-        self.footer_frame.grid(row=4, column=0, sticky=NSEW)
+        self.footer_frame.grid(row=3, column=0, sticky=NSEW)
 
-        self.logo_frame.grid_rowconfigure(0, weight=1)
+        self.demo_frame = Frame(self.myParent, bg='#00A1E4')
+        self.demo_frame.grid(row=4, column=0, sticky=NSEW)
+
+        # self.logo_frame.grid_rowconfigure(0, weight=1)
         self.logo_frame.grid_columnconfigure(0, weight=1)
+        self.logo_frame.grid_columnconfigure(1, weight=1)
 
-        self.button_frame.grid_rowconfigure(1, weight=1)
+        # self.button_frame.grid_rowconfigure(1, weight=1)
         self.button_frame.grid_columnconfigure(0, weight=1)
         self.button_frame.grid_columnconfigure(1, weight=1)
         self.button_frame.grid_columnconfigure(2, weight=1)
         self.button_frame.grid_columnconfigure(3, weight=1)
 
-        # self.progress_frame.grid_rowconfigure(2, weight=1)
-        self.progress_frame.grid_columnconfigure(0, weight=1)
-
-        self.coord_frame.grid_rowconfigure(3, weight=1)
-        self.coord_frame.grid_rowconfigure(4, weight=1)
-        self.coord_frame.grid_rowconfigure(5, weight=1)
+        self.coord_frame.grid_rowconfigure(0, weight=1)
+        self.coord_frame.grid_rowconfigure(1, weight=1)
         self.coord_frame.grid_columnconfigure(0, weight=1)
         self.coord_frame.grid_columnconfigure(1, weight=1)
         self.coord_frame.grid_columnconfigure(2, weight=1)
         self.coord_frame.grid_columnconfigure(3, weight=1)
 
-        # self.footer_frame.grid_rowconfigure(6, weight=1)
         self.footer_frame.grid_columnconfigure(0, weight=1)
 
+        self.demo_frame.grid_rowconfigure(0, weight=1)
+
         self.head_label = Label(self.logo_frame, text='KLM TAPE MASKING ROBOT', padx=25, pady=25)
-        self.head_label.configure(font=("Arial", 14, "bold"), bg='#00A1E4')
-        self.head_label.grid(row=0, column=0, sticky='EWNS')
+        self.head_label.configure(font=mytitleFont, bg='#00A1E4', foreground='white')
+        self.head_label.grid(row=0, column=0, padx=10, pady=10, sticky='EWNS')
 
-        self.start_button = Button(self.button_frame, command=self.buttonstartclick, padx=5, pady=5, text='Start')
-        self.start_button.configure(font=("Arial", 12), relief=RAISED)
-        self.start_button.grid(row=0, column=0, pady=25, padx=25, sticky='EWNS')
-        self.start_button.bind("<Return>", self.buttonstartclick_a)
+        self.logo_label = Label(self.logo_frame, image=logo, bg='#00A1E4')
+        self.logo_label.image = logo
+        self.logo_label.grid(row=0, column=1, sticky='EWNS')
 
-        self.stop_button = Button(self.button_frame, command=self.buttonstopclick, padx=5, pady=5, text='Stop')
-        self.stop_button.configure(font=("Arial", 12), relief=RAISED)
-        self.stop_button.grid(row=0, column=1, pady=25, padx=25, sticky='EWNS')
-        self.stop_button.bind("<Return>", self.buttonstopclick_a)
+        mybuttons = ['Connect', 'Stop', 'Reset', 'Exit']
+        self.buttons = []
+        for column_index, button in enumerate(mybuttons):
+            self.buttons.append(Button(self.button_frame, text=button,
+                                       command=lambda column_index=column_index: self.button_click_a(column_index)))
+            self.buttons[column_index].configure(font=mybuttonFont, relief=RAISED)
+            self.buttons[column_index].grid(row=0, column=column_index, pady=25, padx=25, sticky='EWNS')
 
-        self.reset_button = Button(self.button_frame, padx=5, pady=5, text='Reset')
-        self.reset_button.configure(font=("Arial", 12), relief=RAISED)
-        self.reset_button.grid(row=0, column=2, pady=25, padx=25, sticky='EWNS')
+        mylabel_text = ['Connection with Robot: ', 'Connection with Lidar: ']
 
-        self.exit_button = Button(self.button_frame, command=self.buttonexitclick, padx=5, pady=5, text='Exit')
-        self.exit_button.configure(font=("Arial", 12), relief=RAISED)
-        self.exit_button.grid(row=0, column=3, pady=25, padx=25, sticky='EWNS')
-        self.exit_button.bind("<Return>", self.buttonexitclick_a)
+        for column_index, text in enumerate(mylabel_text):
+            if column_index == 0:
+                mylabels = Label(self.coord_frame, text=text)
+                mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
+                mylabels.grid(column=column_index, row=0, sticky='EWNS', padx=5, pady=15)
+            else:
+                mylabels = Label(self.coord_frame, text=text)
+                mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
+                mylabels.grid(column=column_index + 1, row=0, sticky='EWNS', padx=5, pady=15)
 
-        self.progress = ttk.Progressbar(self.progress_frame, mode='determinate', length=300)
-        self.progress.grid(column=0, row=2, padx=5, pady=25, sticky='EWNS')
+        self.mycoords = ['Not connected', 'Not connected']
+        self.mylabels = []
 
-        self.x_label = Label(self.coord_frame, text="X", background='#00A1E4')
-        self.x_label.configure(font=mylabelFont, bg='#00A1E4')
-        self.x_label.grid(column=0, row=0, sticky='EWNS', padx=5, pady=15)
-        self.y_label = Label(self.coord_frame, text="Y", background='#00A1E4')
-        self.y_label.configure(font=mylabelFont, bg='#00A1E4')
-        self.y_label.grid(column=0, row=1, sticky='EWNS', padx=5, pady=15)
-        self.z_label = Label(self.coord_frame, text="Z", background='#00A1E4')
-        self.z_label.configure(font=mylabelFont, bg='#00A1E4')
-        self.z_label.grid(column=0, row=2, sticky='EWNS', padx=5, pady=15)
+        for column_index, text in enumerate(self.mycoords):
+            if column_index == 0:
+                self.mylabels.append(Label(self.coord_frame, text=text))
+                self.mylabels[column_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
+                self.mylabels[column_index].grid(column=column_index + 1, row=0, padx=5, sticky='EWNS')
+            else:
+                self.mylabels.append(Label(self.coord_frame, text=text))
+                self.mylabels[column_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
+                self.mylabels[column_index].grid(column=column_index + 2, row=0, padx=5, sticky='EWNS')
 
-        self.rx_label = Label(self.coord_frame, text="RX", background='#00A1E4')
-        self.rx_label.configure(font=mylabelFont, bg='#00A1E4')
-        self.rx_label.grid(column=2, row=0, sticky='EWNS', padx=5, pady=15)
-        self.ry_label = Label(self.coord_frame, text="RY", background='#00A1E4')
-        self.ry_label.configure(font=mylabelFont, bg='#00A1E4')
-        self.ry_label.grid(column=2, row=1, sticky='EWNS', padx=5, pady=15)
-        self.rz_label = Label(self.coord_frame, text="RZ", background='#00A1E4')
-        self.rz_label.configure(font=mylabelFont, bg='#00A1E4')
-        self.rz_label.grid(column=2, row=2, sticky='EWNS', padx=5, pady=15)
+        self.console = Text(self.footer_frame, height=15)
+        self.console.grid(column=0, row=0, pady=5, padx=25, sticky='EWNS')
 
-        myX = "5,55"
-        myY = "6,66"
-        myZ = "7,77"
+        self.demo_state = IntVar()
+        self.demo = Checkbutton(self.demo_frame, bg='#00A1E4', text='Demo',
+                                variable=self.demo_state, onvalue=1, offvalue=0)
+        self.demo.grid(column=1, row=0, pady=5, padx=25)
 
-        self.myX_label = Label(self.coord_frame, text=myX, background="white")
-        self.myX_label.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-        self.myX_label.grid(column=1, row=0, sticky='EWNS')
-        self.myY_label = Label(self.coord_frame, text=myY, background="white")
-        self.myY_label.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-        self.myY_label.grid(column=1, row=1, sticky='EWNS')
-        self.myZ_label = Label(self.coord_frame, text=myZ, background="white")
-        self.myZ_label.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-        self.myZ_label.grid(column=1, row=2, sticky='EWNS')
+    def console_print(self, text):
+        self.console.insert(END, text)
 
-        myRX = "8,88"
-        myRY = "9,99"
-        myRZ = "1,11"
+    def button_click_a(self, i):
+        if i == 0:
+            if self.buttons[0]["text"] == 'Start':
+                self.console_print("Start button clicked \n")
+            else:
+                self.console_print("Connect button clicked \n")
+            self.button_start_click()
+        elif i == 1:
+            self.console_print("Stop button clicked \n")
+            self.button_stop_click()
+        elif i == 2:
+            self.console_print("Reset button clicked \n")
+            self.button_reset_click()
+        elif i == 3:
+            self.console_print("Exit button clicked \n")
+            self.button_exit_click()
 
-        self.myRX_label = Label(self.coord_frame, text=myRX, background="white")
-        self.myRX_label.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-        self.myRX_label.grid(column=3, row=0, sticky='EWNS')
-        self.myRY_label = Label(self.coord_frame, text=myRY, background="white")
-        self.myRY_label.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-        self.myRY_label.grid(column=3, row=1, sticky='EWNS')
-        self.myRZ_label = Label(self.coord_frame, text=myRZ, background="white")
-        self.myRZ_label.configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
-        self.myRZ_label.grid(column=3, row=2, sticky='EWNS')
+    def button_start_click(self):
+        start_clicked = 0
+        if self.buttons[0]["text"] == 'Start':
+            start_clicked = 1
 
-        Label(self.footer_frame, text="", pady=20, background="#00A1E4").grid(column=0, row=0, sticky='EWNS')
+        if self.buttons[0]["text"] == 'Connect':
+            try:
+                self.myrobot = MyRobot("192.168.1.102", 'COM3')
+            except socket.timeout as err:
+                showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
+                self.console_print("Connection error, try again... \n")
+            except socket.error as err:
+                showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
+                self.console_print("Connection error, try again... \n")
+            except urx.ursecmon.TimeoutException as err:
+                showerror("Timeout error", "Could not connect with the robot\n Restart the robot!")
+            else:
+                self.buttons[0].configure(text='Start')
 
-    def buttonstartclick(self):
-        self.start_button.configure(state="disabled")
+        if start_clicked == 1:
+            self.buttons[0].configure(state='disabled')
+            if self.demo_state == 1:
+                self.console_print("Robot starting in Demo mode")
+                self.new_thread = Thread(target=self.myrobot.demo, kwargs={'thread_queue':self.thread_queue})
+                self.new_thread.start()
+                self.after(100, self.listen_for_result)
+            else:
+                self.console_print("Robot starting with masking \n")
+                self.new_thread = Thread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
+                self.new_thread.start()
+                self.after(100, self.listen_for_result)
 
-    def buttonstartclick_a(self):
-        self.buttonstartclick()
+    def button_stop_click(self):
+        # TODO stop the robot
+        self.buttons[0].configure(state="normal")
+        self.myrobot.stopl()
+        self.myrobot.stop()
 
-    def buttonstopclick(self):
-        self.start_button.configure(state="normal")
+    def button_reset_click(self):
+        # TODO set everything back to begin state
+        self.buttons[0].configure(state="normal")
+        self.buttons[0].configure(text="Connect")
+        self.myrobot.__del__()
+        self.console_print("Back to begin state! \n")
+        self.myrobot.mylidar.disconnect()
 
-    def buttonstopclick_a(self):
-        self.buttonstopclick()
-
-    def buttonexitclick(self):
+    def button_exit_click(self):
+        self.console_print("Shutting down \n")
         root.destroy()
+        sys.exit()
 
-    def buttonexitclick_a(self, event):
-        self.buttonexitclick()
+    def listen_for_result(self):
+        try:
+            self.res = self.thread_queue.get(0)
+        except queue.Empty:
+            self.root.after(100, self.listen_for_result)
 
 
 root = Tk()
 myapp = MyApp(root)
 root.mainloop()
+

@@ -9,6 +9,9 @@ import logging
 import numpy as np
 import time
 
+#import queue
+#import threading
+
 from math import pi, cos, sin, acos
 import math 
 import lidar_circle as lidar
@@ -237,11 +240,11 @@ class MyRobot(urx.Robot):
             self.close()
     
 
-    def run(self):
+    def run(self, thread_queue=None):
         #Configure Robot
         logging.basicConfig(level=logging.WARN)
-    #    rob = urx.Robot("192.168.1.102", True)
-        self.mylidar.disconnect()
+    #   rob = urx.Robot("192.168.1.102", True)
+    #   self.mylidar.disconnect()
         time.sleep(1)
         v = 0.2
         a = 0.3
@@ -289,7 +292,3 @@ class MyRobot(urx.Robot):
         finally:
             print("Program finished!")
             self.close()
-
-
-urxrobot = MyRobot("192.168.1.102", "COM3")
-urxrobot.run()

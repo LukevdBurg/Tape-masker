@@ -9,7 +9,7 @@ from PIL import Image, ImageTk
 from Circle import MyRobot
 
 
-class MyApp():
+class MyApp:
     def __init__(self, parent):
 
         # ---Font constants---
