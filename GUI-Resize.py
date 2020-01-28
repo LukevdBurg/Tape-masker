@@ -164,8 +164,9 @@ class MyApp:
         if start_clicked == 1:
             self.buttons[0].configure(state='disabled')
             if self.demo_state.get() == 1:
-                self.console_print("Robot starting in Demo mode \n")
+                self.console_print("Robot starting in demo mode \n")
                 self.new_thread = Thread(target=self.myrobot.demo, kwargs={'thread_queue':self.thread_queue})
+                self.new_thread.setDaemon(True)
                 self.new_thread.start()
                 self.myParent.after(100, self.listen_for_result)
             else:
@@ -177,10 +178,11 @@ class MyApp:
     def button_stop_click(self):
         # TODO stop the robot
         self.buttons[0].configure(state="normal")
-        self.myrobot.mylidar.stop_motor()
-        self.myrobot.mylidar.stop()
-        self.myrobot.stopl()
-        self.myrobot.stop()
+        for i in range(5):
+            self.myrobot.mylidar.stop_motor()
+            self.myrobot.mylidar.stop()
+            self.myrobot.stopl()
+            self.myrobot.stop()
         #self.new_thread.join()
 
     def button_reset_click(self):
@@ -194,7 +196,7 @@ class MyApp:
     def button_exit_click(self):
         self.console_print("Shutting down \n")
         root.destroy()
-        sys.exit()
+        raise SystemExit
 
     def listen_for_result(self):
         try:
