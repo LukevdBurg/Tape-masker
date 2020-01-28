@@ -17,7 +17,7 @@ class MyRPLidar(RPLidar):
             scan += next(iterator)
         lidar.stop()
         lidar.stop_motor()
-        lidar.disconnect()
+        #lidar.disconnect()
         return scan
 
     def find_circle(self):
@@ -133,7 +133,7 @@ class MyRPLidar(RPLidar):
         print("totaal hoek rechts:", grand_total_right_angle)
         mylidar.stop()
         mylidar.stop_motor()
-        mylidar.disconnect()
+        #mylidar.disconnect()
         return grand_total_left, grand_total_right, grand_total_left_angle, grand_total_right_angle
 
     def find_vanes(self):

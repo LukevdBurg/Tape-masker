@@ -167,24 +167,23 @@ class MyRobot(urx.Robot):
         #    Rotate the EOAT horizontal in line with the OGV's
         # time.sleep(0.5)
         rotateDistance = math.tan(ogvAngle) * 0.258  # 0.252 + distEOAT + clearance
-        self.translate_tool((rotateDistance, 0, 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((rotateDistance+.002, 0, 0), acc=self.acc, vel=self.vel)
 
         t = self.get_pose()
         t.orient.rotate_yt(-ogvAngle)
-        print("T:", t)
         self.set_pose(t, vel=self.vel, acc=self.acc)
 
         # Go forward, Down, Up, and Back
 
         self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
 
-        self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
+        #self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
 
         self.set_digital_out(gripper_pin, False)  # Hold tape pneuma
         self.set_digital_out(servo_pin, False)  # Close servo
         time.sleep(0.5)
 
-        self.translate_tool((0, -(d_vertical + .01), 0), acc=self.acc, vel=self.vel)
+        #self.translate_tool((0, -(d_vertical + .01), 0), acc=self.acc, vel=self.vel)
         self.set_digital_out(gripper_pin, True)  # Hold tape pneuma
         self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
 
