@@ -217,7 +217,7 @@ class MyRobot(urx.Robot):
                 ",",self.middleStatorPose[5])
 
         try:
-            for i in range(1, 18):  # 35
+            for i in range(2, 17):  # 35
                 print(i, "th tape motion of the 76.")
                 x = -math.sin(np.deg2rad(360 / 76 * i)) * self.radius + self.middleStatorPose[0]
                 y = -math.cos(np.deg2rad(360 / 76 * i)) * self.radius + self.middleStatorPose[1]
@@ -267,7 +267,7 @@ class MyRobot(urx.Robot):
         self.movel(self.middleStatorPose, acc=a, vel=v)
 
         try:
-            for i in range(1, 18):  # 35
+            for i in range(2, 17):  # 35
                 self.tape_station()
                 print(i, "th tape motion of the 76.")
 
