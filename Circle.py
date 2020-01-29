@@ -16,7 +16,6 @@ import lidar_circle as lidar
 
 
 class MyRobot(urx.Robot):
-    # TODO Make it optional to start with the safe pose
     def __init__(self, host, port):
         super().__init__(host)
         self.mylidar = lidar.MyRPLidar(port)

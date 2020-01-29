@@ -180,17 +180,19 @@ class MyApp:
             self.buttons[0].configure(state='disabled')
             if self.demo_state.get() == 1:
                 self.console_print("Robot starting in demo mode \n")
+                self.myrobot.demo()
                 # self.new_thread = Thread(target=self.myrobot.demo, kwargs={'thread_queue': self.thread_queue})
-                self.new_thread = StoppableThread(target=self.myrobot.demo, kwargs={'thread_queue': self.thread_queue})
-                self.new_thread.setDaemon(True)
-                self.new_thread.start()
-                self.myParent.after(100, self.listen_for_result)
+                # self.new_thread = StoppableThread(target=self.myrobot.demo, kwargs={'thread_queue': self.thread_queue})
+                # self.new_thread.setDaemon(True)
+                # self.new_thread.start()
+                # self.myParent.after(100, self.listen_for_result)
             else:
                 self.console_print("Robot starting with masking \n")
+                self.myrobot.run()
                 # self.new_thread = Thread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
-                self.new_thread = StoppableThread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
-                self.new_thread.start()
-                self.myParent.after(100, self.listen_for_result)
+                # self.new_thread = StoppableThread(target=self.myrobot.run, kwargs={'thread_queue': self.thread_queue})
+                # self.new_thread.start()
+                # self.myParent.after(100, self.listen_for_result)
 
     def button_stop_click(self):
         # TODO Fix the stop button with Thread interrupt
@@ -202,11 +204,11 @@ class MyApp:
         #     self.myrobot.stop()
         #     # self.new_thread.stop()
         #     # self.new_thread.join()
-        self.myrobot.stop()
-        self.myrobot.mylidar.stop_motor()
-        self.myrobot.mylidar.stop()
-        self.new_thread.stop()
-        self.new_thread.join()
+        # self.myrobot.stop()
+        # self.myrobot.mylidar.stop_motor()
+        # self.myrobot.mylidar.stop()
+        # self.new_thread.stop()
+        # self.new_thread.join()
         #self.myrobot.stopl()
 
 

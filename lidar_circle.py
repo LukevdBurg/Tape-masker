@@ -5,19 +5,21 @@ from rplidar import RPLidar
 class MyRPLidar(RPLidar):
     def __init__(self, port):
         super().__init__(port)
+        info = self.get_info()
+        print(info)
+        health = self.get_health()
+        print(health)
         self.reset()
         self.port = port
 
     def scanner(self):
         scan = []
- #       lidar = RPLidar("COM3")
-        lidar = RPLidar(self.port)
         
-        iterator = lidar.iter_scans()
+        iterator = self.iter_scans()
         for i in range(0, 10):
             scan += next(iterator)
-        lidar.stop()
-        lidar.stop_motor()
+        self.stop()
+        self.stop_motor()
         #lidar.disconnect()
         return scan
 
@@ -185,3 +187,5 @@ class MyRPLidar(RPLidar):
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
 
+lidar = MyRPLidar('COM3')
+lidar.find_middle()
