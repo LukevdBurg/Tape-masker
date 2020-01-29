@@ -103,12 +103,12 @@ class MyRobot(urx.Robot):
         #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.9059884629302861, -1.1397081872494461, -2.0799622606546024, -1.4943256110586116,
                         1.5710074217261376, -1.234022953675229]  # starting J pose
-        grabTapePose = [0.058, 0.445, 0.22, 2.222, 2.219, -0.001]  # Grabbing pose
-        forwardTapePose = [0.065, 0.445, 0.082, 2.222, 2.219, -0.001]  # move forward and flatten 0.062
+        grabTapePose = [0.058, 0.448, 0.22, 2.222, 2.219, -0.001]  # Grabbing pose y stond op 445
+        forwardTapePose = [0.065, 0.448, 0.082, 2.222, 2.219, -0.001]  # move forward and flatten 0.062
 
         # Movements
         # self.move_to_middle() # Go to middle of motor at start and end
-        self.movel(self.middlePose, acc=a, vel=v * 2)  # JPose near the station
+        self.movel(self.middlePose, acc=a, vel=v * 2)  # LPose middle down
         self.movej(stationJPose, acc=a, vel=v * 4)  # JPose near the station
         self.set_digital_out(gripper_pin, False)  # Gripper closed
 
@@ -126,12 +126,13 @@ class MyRobot(urx.Robot):
         # self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
 
         self.set_digital_out(servo_pin, True)  # Close servo
-
+        time.sleep(1)
         forwardTapePose[0] -= 0.1  # dont know check!
         self.movel(forwardTapePose, acc=a, vel=v)
 
 
         self.movej(stationJPose, acc=a, vel=v * 2)  # JPose near the station
+
         self.movej(self.middleStatorJPose, acc=self.acc, vel=self.vel * 2)
 
         self.set_digital_out(hold_tape_pin, False)  # Hold tape pneuma
@@ -149,7 +150,7 @@ class MyRobot(urx.Robot):
         # Taping movement
         print("Tape movement!")
         d_horizontal = 0.155  # 0.14 #Forward distance
-        d_vertical = 0.017  # Pushing down distance
+        d_vertical = 0.014 # Pushing down distance
         ogvAngle = np.deg2rad(10)  # Horizontal angle of the OGV's
         if not i % 3:
             #             #Get correction distances from LIDAR
@@ -157,7 +158,7 @@ class MyRobot(urx.Robot):
             print("X = ", self.correctionX, "\nZ = ", self.correctionZ)
             # time.sleep(0.5)
             #       correctionX = -correctionX
-            #self.correctionX += 0.006  # 0.025 #0.0225  # offset of lidar
+            self.correctionX += 0.006  # 0.025 #0.0225  # offset of lidar
             self.correctionZ -= (0.17 + 0.05)  # 0.1825 Lidar offset
             print("X = ", self.correctionX, "\nZ = ", self.correctionZ)
 
@@ -165,17 +166,17 @@ class MyRobot(urx.Robot):
 
         #    Rotate the EOAT horizontal in line with the OGV's
         time.sleep(3)
-        rotateDistance = math.tan(ogvAngle) * 0.258  # 0.252 + distEOAT + clearance
+        rotateDistance = math.tan(ogvAngle) * 0.22  # 0.252 + distEOAT + clearance
         self.translate_tool((rotateDistance, 0, 0), acc=self.acc, vel=self.vel)
 
         t = self.get_pose()
-        t.orient.rotate_xt(np.deg2rad(2))
+        t.orient.rotate_xt(np.deg2rad(-2))
         t.orient.rotate_yt(-ogvAngle)
         self.set_pose(t, vel=self.vel, acc=self.acc)
 
         # Go forward, Down, Up, and Back
         time.sleep(3)
-        #self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
 
         self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
 
@@ -184,13 +185,14 @@ class MyRobot(urx.Robot):
         time.sleep(0.5)
 
         self.translate_tool((0, -(d_vertical + .02), 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
         self.set_digital_out(gripper_pin, True)  # Hold tape pneuma
-        #self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
-
+        time.sleep(0.5)
         # Rotate EOAT back
 
         t = self.get_pose()
         t.orient.rotate_yt(ogvAngle)
+        t.orient.rotate_xt(np.deg2rad(2))
         self.set_pose(t, acc=self.acc, vel=self.vel)
         self.translate_tool((-rotateDistance, 0, -.05), acc=self.acc, vel=self.vel)
 
@@ -209,14 +211,17 @@ class MyRobot(urx.Robot):
 
         self.on_startup()  # Joint move in middle of joint limits UR10
         self.calibrate_to_center()  # Get center with LIDAR
-        middleStatorPose = self.getl()
+        self.middleStatorPose = self.getl()
+        print("Current Toolpose : ", self.middleStatorPose[0],",",self.middleStatorPose[1],
+              ",",self.middleStatorPose[2],",",self.middleStatorPose[3],",",self.middleStatorPose[4],
+                ",",self.middleStatorPose[5])
 
         try:
-            for i in range(2, 17):  # 35
+            for i in range(1, 18):  # 35
                 print(i, "th tape motion of the 76.")
-                x = -math.sin(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[0]
-                y = -math.cos(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[1]
-                z = middleStatorPose[2] - 0.03  # -0.2
+                x = -math.sin(np.deg2rad(360 / 76 * i)) * self.radius + self.middleStatorPose[0]
+                y = -math.cos(np.deg2rad(360 / 76 * i)) * self.radius + self.middleStatorPose[1]
+                z = self.middleStatorPose[2] - 0.03  # -0.2
                 rz = - np.deg2rad(360 / 76 * i)
 
                 # Necessary with rotvectors. Past pi it needs to start at 0 again.
@@ -249,9 +254,9 @@ class MyRobot(urx.Robot):
 
         self.middleStatorPose = self.getl()
         self.middleStatorJPose = self.getj()
-        # print("Current Toolpose : ", middleStatorPose[0],",",middleStatorPose[1],
-        #      ",",middleStatorPose[2],",",middleStatorPose[3],",",middleStatorPose[4],
-        #     ",",middleStatorPose[5])
+        print("Current Toolpose : ", self.middleStatorPose[0],",",self.middleStatorPose[1],
+              ",",self.middleStatorPose[2],",",self.middleStatorPose[3],",",self.middleStatorPose[4],
+                ",",self.middleStatorPose[5])
 
         self.stationJPose = [1.9059884629302861, -1.1397081872494461, -2.0799622606546024, -1.4943256110586116,
                              1.5710074217261376, -1.234022953675229]  # starting J pose
@@ -262,7 +267,7 @@ class MyRobot(urx.Robot):
         self.movel(self.middleStatorPose, acc=a, vel=v)
 
         try:
-            for i in range(2, 17):  # 35
+            for i in range(1, 18):  # 35
                 self.tape_station()
                 print(i, "th tape motion of the 76.")
 

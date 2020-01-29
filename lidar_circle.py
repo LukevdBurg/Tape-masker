@@ -14,11 +14,11 @@ class MyRPLidar(RPLidar):
 
     def scanner(self):
         scan = []
-        print("Scanning")
+        #print("Scanning")
         iterator = self.iter_scans()
         for i in range(0, 10):
             scan += next(iterator)
-        print("Scan done")
+        #print("Scan done")
         self.stop()
         self.stop_motor()
         # Commented due to bug fixing
@@ -143,7 +143,7 @@ class MyRPLidar(RPLidar):
 
     def find_vanes(self):
         scan = self.scanner()
-        print("Scanned")
+        #print("Scanned")
         vane = []
         for row in scan:
             if 80 < row[1] < 100 and row[2] < 500:
