@@ -41,6 +41,7 @@ class MyRobot(urx.Robot):
         self.set_digital_out(gripper_pin, True)  # Gripper closed
         self.movej(self.safe_jpos, acc=self.acc, vel=self.vel)
 
+
     def calibrate_to_center(self):
         # Calibrate to the center of the rotor
         print("Calibrating Center!")
@@ -103,8 +104,8 @@ class MyRobot(urx.Robot):
         #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.9059884629302861, -1.1397081872494461, -2.0799622606546024, -1.4943256110586116,
                         1.5710074217261376, -1.234022953675229]  # starting J pose
-        grabTapePose = [0.058, 0.448, 0.22, 2.222, 2.219, -0.001]  # Grabbing pose y stond op 445
-        forwardTapePose = [0.065, 0.448, 0.082, 2.222, 2.219, -0.001]  # move forward and flatten 0.062
+        grabTapePose = [0.0674, 0.455, 0.221, 2.222, 2.219, 0]  # Grabbing pose y stond op 445
+        forwardTapePose = [0.065, 0.457, 0.082, 2.222, 2.219, 0]  # move forward and flatten 0.062 old [0.065, 0.455, 0.082, 2.222, 2.219, -0.001]
 
         # Movements
         # self.move_to_middle() # Go to middle of motor at start and end
@@ -121,12 +122,21 @@ class MyRobot(urx.Robot):
         self.movel(forwardTapePose, acc=a, vel=v)  # Pull tapeforward
         self.set_digital_out(hold_tape_pin, True)  # Hold tape pneuma
         #        Closepusher
-        self.movel([forwardTapePose[0] + .003, forwardTapePose[1], forwardTapePose[2] - 0.005, forwardTapePose[3],
+
+
+        self.movel([forwardTapePose[0] + .004, forwardTapePose[1], forwardTapePose[2] - 0.005, forwardTapePose[3],
                     forwardTapePose[4], forwardTapePose[5]], acc=a, vel=v)
         # self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
-
+        #t = self.get_pose()
+        #t.orient.rotate_yt(np.deg2rad(2))
+        #t.orient.rotate_zt(np.deg2rad(-2))
+        #self.set_pose(t, acc=self.acc, vel=self.vel)
         self.set_digital_out(servo_pin, True)  # Close servo
         time.sleep(1)
+        #t = self.get_pose()
+        #t.orient.rotate_yt(np.deg2rad(-2))
+        #t.orient.rotate_zt(np.deg2rad(2))
+        #self.set_pose(t, acc=self.acc, vel=self.vel)
         forwardTapePose[0] -= 0.1  # dont know check!
         self.movel(forwardTapePose, acc=a, vel=v)
 
