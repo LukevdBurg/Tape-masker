@@ -40,7 +40,7 @@ class MyRPLidar(RPLidar):
         distances = measurements[:, 2]
         mean_distance = np.mean(distances)
         minimum_index = np.argmin(measurements[:, 2])
-        if (angles[minimum_index] > 180):
+        if angles[minimum_index] > 180:
             angle = angles[minimum_index] - 180
         else:
             angle = angles[minimum_index] + 180

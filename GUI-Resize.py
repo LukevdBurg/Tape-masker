@@ -200,7 +200,8 @@ class MyApp:
                 # self.myParent.after(100, self.listen_for_result)
 
     def button_stop_click(self):
-        # TODO Fix the stop button with Thread interrupt
+        # TODO Stop button does not work because of active threads. To complicated to figure out with the remaining
+        #  time.
         self.buttons[0].configure(state="normal")
         # for i in range(5):
         #     self.myrobot.mylidar.stop_motor()
