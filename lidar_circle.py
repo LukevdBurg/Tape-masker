@@ -14,13 +14,13 @@ class MyRPLidar(RPLidar):
 
     def scanner(self):
         scan = []
-        
+
         iterator = self.iter_scans()
         for i in range(0, 10):
             scan += next(iterator)
         self.stop()
         self.stop_motor()
-        #lidar.disconnect()
+        # lidar.disconnect()
         return scan
 
     def find_circle(self):
@@ -29,7 +29,7 @@ class MyRPLidar(RPLidar):
         mean_distance = np.mean(distances)
         max_distance = np.max(distances)
 
-        if mean_distance < 900 and mean_distance > 600 and max_distance < 1400:
+        if 900 > mean_distance > 600 and max_distance < 1400:
             return True
         else:
             return False
@@ -47,7 +47,7 @@ class MyRPLidar(RPLidar):
         xdist = (np.sin(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
         zdist = (np.cos(np.radians(angle)) * (mean_distance - measurements[minimum_index, 2])) / 1000
 
-        return xdist,zdist
+        return xdist, zdist
 
     def find_middle_offsets(self):
         measurements = np.array(self.scanner())
@@ -68,16 +68,16 @@ class MyRPLidar(RPLidar):
         avg_north = np.mean(north_points)
         avg_east = np.mean(east_points)
         avg_south = np.mean(south_points)
-        print("W:",avg_west)
-        print("N:",avg_north)
-        print("E:",avg_east)
-        print("S:",avg_south)
-        return (avg_north-avg_south)/1000/2, (avg_west-avg_east)/1000/2
+        print("W:", avg_west)
+        print("N:", avg_north)
+        print("E:", avg_east)
+        print("S:", avg_south)
+        return (avg_north - avg_south) / 1000 / 2, (avg_west - avg_east) / 1000 / 2
 
-
-
-    def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
+    def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L,
+                         lower_distance_R,
                          upper_distance_L, upper_distance_R):
+        # Removed due to bugfixing
         # mylidar = RPLidar("COM3", baudrate=115200)
         mylidar_scan = []
         total_average_left_vane = []
@@ -88,7 +88,7 @@ class MyRPLidar(RPLidar):
         for y in range(0, 20):
 
             for i, scan in enumerate(self.iter_scans(scan_type='normal',
-                                                        max_buf_meas=60000)):  # scan_type='normal', max_buf_meas=60000
+                                                     max_buf_meas=60000)):  # scan_type='normal', max_buf_meas=60000
 
                 mylidar_scan.append(scan)
                 if i > 10:
@@ -103,7 +103,8 @@ class MyRPLidar(RPLidar):
 
                     if lower_angle_L < my_list[1] < upper_angle_L and lower_distance_L < my_list[2] < upper_distance_L:
                         left_vane.append(my_list)
-                    elif lower_angle_R < my_list[1] < upper_angle_R and lower_distance_R < my_list[2] < upper_distance_R:
+                    elif lower_angle_R < my_list[1] < upper_angle_R and lower_distance_R < my_list[
+                        2] < upper_distance_R:
                         right_vane.append(my_list)
 
             # print("arr_avg: ", arr_avg)
@@ -136,7 +137,7 @@ class MyRPLidar(RPLidar):
         print("totaal hoek rechts:", grand_total_right_angle)
         self.stop()
         self.stop_motor()
-        #mylidar.disconnect()
+        # mylidar.disconnect()
         return grand_total_left, grand_total_right, grand_total_left_angle, grand_total_right_angle
 
     def find_vanes(self):
@@ -185,7 +186,6 @@ class MyRPLidar(RPLidar):
         mean_z_distance = (abs(z_distance_from_left_vane) + abs(z_distance_from_right_vane)) / 2
         x_distance_to_center = (x_distance_from_left_vane + x_distance_from_right_vane) / 2
         return x_distance_to_center / 1000, mean_z_distance / 1000
-
 
 # lidar = MyRPLidar('COM3')
 # lidar.find_middle()

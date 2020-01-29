@@ -211,23 +211,24 @@ class MyRobot(urx.Robot):
         middleStatorPose = self.getl()
 
         try:
-            for i in range(2, 16):  # 35
-                print(i, "th tape motion of the 76.")
-                x = -math.sin(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[0]
-                y = -math.cos(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[1]
-                z = middleStatorPose[2] - 0.03  # -0.2
-                rz = - np.deg2rad(360 / 76 * i)
+            i = 2
+            #for i in range(2, 16):  # 35
+            print(i, "th tape motion of the 76.")
+            x = -math.sin(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[0]
+            y = -math.cos(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[1]
+            z = middleStatorPose[2] - 0.03  # -0.2
+            rz = - np.deg2rad(360 / 76 * i)
 
-                # Necessary with rotvectors. Past pi it needs to start at 0 again. 
-                if rz >= pi:
-                    invert = True
-                if invert == True:
-                    rz = -rz
+            # Necessary with rotvectors. Past pi it needs to start at 0 again.
+            if rz >= pi:
+                invert = True
+            if invert == True:
+                rz = -rz
 
-                # Pose between OGV's
-                pose = [x, y, z, 0, 0, rz]  # x-0.345
-                self.movel(pose, acc=a, vel=v)
-                self.tape_movement(0)
+            # Pose between OGV's
+            pose = [x, y, z, 0, 0, rz]  # x-0.345
+            self.movel(pose, acc=a, vel=v)
+            #self.tape_movement(0)
         finally:
             print("Demo finished!")
             self.close()

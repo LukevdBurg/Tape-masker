@@ -1,7 +1,6 @@
 import queue
 import socket
 import threading
-from threading import Thread
 from tkinter import *
 from tkinter.font import Font
 from tkinter.messagebox import showerror
@@ -116,16 +115,20 @@ class MyApp:
                 mylabels.configure(font=mylabelFont, bg='#00A1E4', foreground='white')
                 mylabels.grid(column=column_index + 1, row=0, sticky='EWNS', padx=5, pady=15)
 
-        self.mycoords = ['Not connected', 'Not connected']
+        self.robot_connection = StringVar()
+        self.robot_connection.set('Not connected')
+        self.lidar_connection = StringVar()
+        self.lidar_connection.set('Not connected')
+        self.mycoords = [self.robot_connection, self.lidar_connection]
         self.mylabels = []
 
         for column_index, text in enumerate(self.mycoords):
             if column_index == 0:
-                self.mylabels.append(Label(self.coord_frame, text=text))
+                self.mylabels.append(Label(self.coord_frame, textvariable=text))
                 self.mylabels[column_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
                 self.mylabels[column_index].grid(column=column_index + 1, row=0, padx=5, sticky='EWNS')
             else:
-                self.mylabels.append(Label(self.coord_frame, text=text))
+                self.mylabels.append(Label(self.coord_frame, textvariable=text))
                 self.mylabels[column_index].configure(font=mylabel_coordFont, bg='white', relief=SUNKEN)
                 self.mylabels[column_index].grid(column=column_index + 2, row=0, padx=5, sticky='EWNS')
 
@@ -164,7 +167,7 @@ class MyApp:
 
         if self.buttons[0]["text"] == 'Connect':
             try:
-                self.myrobot = MyRobot("192.168.1.102", "COM3")
+                self.myrobot = MyRobot("192.168.1.102", 'COM3')
             except socket.timeout as err:
                 showerror("Socket error", "Could not connect with the robot\n Make sure the robot is plugged in!")
                 self.console_print("Connection error, try again... \n")
@@ -175,6 +178,8 @@ class MyApp:
                 showerror("Timeout error", "Could not connect with the robot\n Restart the robot!")
             else:
                 self.buttons[0].configure(text='Start')
+                self.lidar_connection.set('Connected')
+                self.robot_connection.set('Connected')
 
         if start_clicked == 1:
             self.buttons[0].configure(state='disabled')
@@ -209,16 +214,18 @@ class MyApp:
         # self.myrobot.mylidar.stop()
         # self.new_thread.stop()
         # self.new_thread.join()
-        #self.myrobot.stopl()
-
+        # self.myrobot.stopl()
 
     def button_reset_click(self):
-        # TODO set everything back to begin state
+        # Set everything back to start state, delete created objects
+
         self.buttons[0].configure(state="normal")
         self.buttons[0].configure(text="Connect")
         self.myrobot.__del__()
         self.console_print("Back to begin state! \n")
         self.myrobot.mylidar.disconnect()
+        self.robot_connection.set('Not connected')
+        self.lidar_connection.set('Not connected')
 
     def button_exit_click(self):
         self.console_print("Shutting down \n")
