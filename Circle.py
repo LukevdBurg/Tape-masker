@@ -109,7 +109,7 @@ class MyRobot(urx.Robot):
         # Movements
         # self.move_to_middle() # Go to middle of motor at start and end
         self.movel(self.middlePose, acc=a, vel=v * 2)  # JPose near the station
-        self.movej(stationJPose, acc=a, vel=v * 2)  # JPose near the station
+        self.movej(stationJPose, acc=a, vel=v * 4)  # JPose near the station
         self.set_digital_out(gripper_pin, False)  # Gripper closed
 
         self.movel(grabTapePose, acc=a, vel=v)  # Go to grab tape
@@ -121,7 +121,7 @@ class MyRobot(urx.Robot):
         self.movel(forwardTapePose, acc=a, vel=v)  # Pull tapeforward
         self.set_digital_out(hold_tape_pin, True)  # Hold tape pneuma
         #        Closepusher
-        self.movel([forwardTapePose[0] + .005, forwardTapePose[1], forwardTapePose[2] - 0.005, forwardTapePose[3],
+        self.movel([forwardTapePose[0] + .003, forwardTapePose[1], forwardTapePose[2] - 0.005, forwardTapePose[3],
                     forwardTapePose[4], forwardTapePose[5]], acc=a, vel=v)
         # self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
 
@@ -130,7 +130,7 @@ class MyRobot(urx.Robot):
         forwardTapePose[0] -= 0.1  # dont know check!
         self.movel(forwardTapePose, acc=a, vel=v)
 
-        time.sleep(1.5)  # Remove when servo connected
+
         self.movej(stationJPose, acc=a, vel=v * 2)  # JPose near the station
         self.movej(self.middleStatorJPose, acc=self.acc, vel=self.vel * 2)
 
@@ -149,42 +149,43 @@ class MyRobot(urx.Robot):
         # Taping movement
         print("Tape movement!")
         d_horizontal = 0.155  # 0.14 #Forward distance
-        d_vertical = 0.0155  # Pushing down distance
-        ogvAngle = np.deg2rad(9)  # Horizontal angle of the OGV's
+        d_vertical = 0.017  # Pushing down distance
+        ogvAngle = np.deg2rad(10)  # Horizontal angle of the OGV's
         if not i % 3:
             #             #Get correction distances from LIDAR
             self.correctionX, self.correctionZ = self.mylidar.find_vanes()
             print("X = ", self.correctionX, "\nZ = ", self.correctionZ)
             # time.sleep(0.5)
             #       correctionX = -correctionX
-            self.correctionX += 0.006  # 0.025 #0.0225  # offset of lidar
+            #self.correctionX += 0.006  # 0.025 #0.0225  # offset of lidar
             self.correctionZ -= (0.17 + 0.05)  # 0.1825 Lidar offset
             print("X = ", self.correctionX, "\nZ = ", self.correctionZ)
 
         self.translate_tool((self.correctionX, 0, self.correctionZ), acc=self.acc, vel=self.vel)
 
         #    Rotate the EOAT horizontal in line with the OGV's
-        # time.sleep(0.5)
+        time.sleep(3)
         rotateDistance = math.tan(ogvAngle) * 0.258  # 0.252 + distEOAT + clearance
-        self.translate_tool((rotateDistance+.002, 0, 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((rotateDistance, 0, 0), acc=self.acc, vel=self.vel)
 
         t = self.get_pose()
+        t.orient.rotate_xt(np.deg2rad(2))
         t.orient.rotate_yt(-ogvAngle)
         self.set_pose(t, vel=self.vel, acc=self.acc)
 
         # Go forward, Down, Up, and Back
+        time.sleep(3)
+        #self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
 
-        self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
-
-        #self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
 
         self.set_digital_out(gripper_pin, False)  # Hold tape pneuma
         self.set_digital_out(servo_pin, False)  # Close servo
         time.sleep(0.5)
 
-        #self.translate_tool((0, -(d_vertical + .01), 0), acc=self.acc, vel=self.vel)
+        self.translate_tool((0, -(d_vertical + .02), 0), acc=self.acc, vel=self.vel)
         self.set_digital_out(gripper_pin, True)  # Hold tape pneuma
-        self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
+        #self.translate_tool((0, 0, -d_horizontal), acc=self.acc, vel=self.vel)
 
         # Rotate EOAT back
 
@@ -211,7 +212,7 @@ class MyRobot(urx.Robot):
         middleStatorPose = self.getl()
 
         try:
-            for i in range(2, 16):  # 35
+            for i in range(2, 17):  # 35
                 print(i, "th tape motion of the 76.")
                 x = -math.sin(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[0]
                 y = -math.cos(np.deg2rad(360 / 76 * i)) * self.radius + middleStatorPose[1]
@@ -239,7 +240,7 @@ class MyRobot(urx.Robot):
         #   self.mylidar.disconnect()
         time.sleep(1)
         v = 0.2
-        a = 0.3
+        a = 0.1
         invert = False
 
         # middleStatorPose = self.getl()
@@ -261,7 +262,7 @@ class MyRobot(urx.Robot):
         self.movel(self.middleStatorPose, acc=a, vel=v)
 
         try:
-            for i in range(2, 16):  # 35
+            for i in range(2, 17):  # 35
                 self.tape_station()
                 print(i, "th tape motion of the 76.")
 

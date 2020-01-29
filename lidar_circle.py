@@ -14,10 +14,11 @@ class MyRPLidar(RPLidar):
 
     def scanner(self):
         scan = []
-
+        print("Scanning")
         iterator = self.iter_scans()
         for i in range(0, 10):
             scan += next(iterator)
+        print("Scan done")
         self.stop()
         self.stop_motor()
         # Commented due to bug fixing
@@ -142,9 +143,10 @@ class MyRPLidar(RPLidar):
 
     def find_vanes(self):
         scan = self.scanner()
+        print("Scanned")
         vane = []
         for row in scan:
-            if 78 < row[1] < 102 and row[2] < 500:
+            if 80 < row[1] < 100 and row[2] < 500:
                 vane.append(row)
         vane = np.array(vane)
         minimum_index = np.argmin(vane[:, 2])
