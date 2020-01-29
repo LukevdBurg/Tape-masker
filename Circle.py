@@ -193,13 +193,15 @@ class MyRobot(urx.Robot):
         self.set_pose(t, acc=self.acc, vel=self.vel)
         self.translate_tool((-rotateDistance, 0, -.05), acc=self.acc, vel=self.vel)
 
-        #    '''
-        self.mylidar.disconnect()
+        # Commented due to bugfixing
+        # self.mylidar.disconnect()
         print("Tape movement done! \n")
 
     def demo(self, thread_queue=None):
         print("Demo mode started!")
-        self.mylidar.disconnect()
+        # Commented due to bugfixing
+        # self.mylidar.disconnect()
+
         v = 0.1
         a = 0.1
         invert = False

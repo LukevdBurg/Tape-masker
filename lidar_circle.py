@@ -78,7 +78,7 @@ class MyRPLidar(RPLidar):
 
     def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L, lower_distance_R,
                          upper_distance_L, upper_distance_R):
-        mylidar = RPLidar("COM3", baudrate=115200)
+        # mylidar = RPLidar("COM3", baudrate=115200)
         mylidar_scan = []
         total_average_left_vane = []
         total_average_right_vane = []
@@ -87,7 +87,7 @@ class MyRPLidar(RPLidar):
 
         for y in range(0, 20):
 
-            for i, scan in enumerate(mylidar.iter_scans(scan_type='normal',
+            for i, scan in enumerate(self.iter_scans(scan_type='normal',
                                                         max_buf_meas=60000)):  # scan_type='normal', max_buf_meas=60000
 
                 mylidar_scan.append(scan)
@@ -125,7 +125,7 @@ class MyRPLidar(RPLidar):
                 total_average_angle_right_vane.append(average_angle_right_vane)
                 print("Average right", average_right_vane)
 
-            mylidar.clean_input()
+            self.clean_input()
         grand_total_left = np.mean(total_average_left_vane)
         grand_total_right = np.mean(total_average_right_vane)
         grand_total_left_angle = np.mean(total_average_angle_left_vane)
@@ -134,8 +134,8 @@ class MyRPLidar(RPLidar):
         print("totaal rechts:", grand_total_right)
         print("totaal hoek links:", grand_total_left_angle)
         print("totaal hoek rechts:", grand_total_right_angle)
-        mylidar.stop()
-        mylidar.stop_motor()
+        self.stop()
+        self.stop_motor()
         #mylidar.disconnect()
         return grand_total_left, grand_total_right, grand_total_left_angle, grand_total_right_angle
 
@@ -187,5 +187,5 @@ class MyRPLidar(RPLidar):
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
 
-lidar = MyRPLidar('COM3')
-lidar.find_middle()
+# lidar = MyRPLidar('COM3')
+# lidar.find_middle()
