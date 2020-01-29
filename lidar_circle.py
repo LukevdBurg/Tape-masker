@@ -20,6 +20,7 @@ class MyRPLidar(RPLidar):
             scan += next(iterator)
         self.stop()
         self.stop_motor()
+        # Commented due to bug fixing
         # lidar.disconnect()
         return scan
 
@@ -87,8 +88,7 @@ class MyRPLidar(RPLidar):
 
         for y in range(0, 20):
 
-            for i, scan in enumerate(self.iter_scans(scan_type='normal',
-                                                     max_buf_meas=60000)):  # scan_type='normal', max_buf_meas=60000
+            for i, scan in enumerate(self.iter_scans(scan_type='normal', max_buf_meas=60000)):
 
                 mylidar_scan.append(scan)
                 if i > 10:
@@ -107,7 +107,6 @@ class MyRPLidar(RPLidar):
                         2] < upper_distance_R:
                         right_vane.append(my_list)
 
-            # print("arr_avg: ", arr_avg)
             if left_vane:
                 left_vane = np.array(left_vane)
                 average_left_vane = np.mean(left_vane[:, 2])
@@ -135,7 +134,8 @@ class MyRPLidar(RPLidar):
         print("totaal rechts:", grand_total_right)
         print("totaal hoek links:", grand_total_left_angle)
         print("totaal hoek rechts:", grand_total_right_angle)
-        self.stop()
+        # Iter_scans function already uses a stop command
+        # self.stop()
         self.stop_motor()
         # mylidar.disconnect()
         return grand_total_left, grand_total_right, grand_total_left_angle, grand_total_right_angle
