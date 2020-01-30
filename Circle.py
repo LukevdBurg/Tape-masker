@@ -42,6 +42,7 @@ class MyRobot(urx.Robot):
         self.movej(self.safe_jpos, acc=self.acc, vel=self.vel)
 
 
+
     def calibrate_to_center(self):
         # Calibrate to the center of the rotor
         print("Calibrating Center!")
@@ -104,7 +105,7 @@ class MyRobot(urx.Robot):
         #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.9059884629302861, -1.1397081872494461, -2.0799622606546024, -1.4943256110586116,
                         1.5710074217261376, -1.234022953675229]  # starting J pose
-        grabTapePose = [0.0674, 0.455, 0.221, 2.222, 2.219, 0]  # Grabbing pose y stond op 445
+        grabTapePose = [0.065, 0.455, 0.221, 2.222, 2.219, 0]  # Grabbing pose y stond op 445
         forwardTapePose = [0.065, 0.457, 0.082, 2.222, 2.219, 0]  # move forward and flatten 0.062 old [0.065, 0.455, 0.082, 2.222, 2.219, -0.001]
 
         # Movements
@@ -114,10 +115,10 @@ class MyRobot(urx.Robot):
         self.set_digital_out(gripper_pin, False)  # Gripper closed
 
         self.movel(grabTapePose, acc=a, vel=v)  # Go to grab tape
-        time.sleep(2)  # Remove when gripper connected
+        #time.sleep(2)  # Remove when gripper connected
         #    closeGripper()
         self.set_digital_out(gripper_pin, True)  # Gripper closed
-        time.sleep(2)  # Remove when gripper connected
+        #time.sleep(2)  # Remove when gripper connected
 
         self.movel(forwardTapePose, acc=a, vel=v)  # Pull tapeforward
         self.set_digital_out(hold_tape_pin, True)  # Hold tape pneuma
@@ -160,7 +161,7 @@ class MyRobot(urx.Robot):
         # Taping movement
         print("Tape movement!")
         d_horizontal = 0.155  # 0.14 #Forward distance
-        d_vertical = 0.014 # Pushing down distance
+        d_vertical = 0.013 # Pushing down distance
         ogvAngle = np.deg2rad(10)  # Horizontal angle of the OGV's
         if not i % 3:
             #             #Get correction distances from LIDAR
@@ -175,7 +176,7 @@ class MyRobot(urx.Robot):
         self.translate_tool((self.correctionX, 0, self.correctionZ), acc=self.acc, vel=self.vel)
 
         #    Rotate the EOAT horizontal in line with the OGV's
-        time.sleep(3)
+        time.sleep(1)
         rotateDistance = math.tan(ogvAngle) * 0.22  # 0.252 + distEOAT + clearance
         self.translate_tool((rotateDistance, 0, 0), acc=self.acc, vel=self.vel)
 
@@ -185,7 +186,7 @@ class MyRobot(urx.Robot):
         self.set_pose(t, vel=self.vel, acc=self.acc)
 
         # Go forward, Down, Up, and Back
-        time.sleep(3)
+        time.sleep(1)
         self.translate_tool((0, 0, d_horizontal), acc=self.acc, vel=self.vel)
 
         self.translate_tool((0, d_vertical, 0), acc=self.acc, vel=self.vel)
@@ -296,8 +297,8 @@ class MyRobot(urx.Robot):
                 pose = [x, y, z, 0, 0, rz]  # x-0.345
                 self.movel(pose, acc=a, vel=v)
                 self.tape_movement(i - 2)
-
-        #   '''
+            self.movel(self.middleStatorPose, acc=a, vel=v)
+        #'''
         finally:
             print("Program finished!")
             self.close()
