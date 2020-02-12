@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Dec  9 15:08:28 2019
-update
-@author: David
-"""
 import logging
 import math
 import time
@@ -24,7 +18,7 @@ class MyRobot(urx.Robot):
         self.vel = 0.2
         self.correctionX = 0.0
         self.correctionZ = 0.0
-        self.diameter = 0.975 + 2 * 0.017 + 0.03  # #Was:1.015+0.1
+        self.diameter = 0.975 + 2 * 0.017 + 0.03 + 0.005 # #Was:1.015+0.1
         self.radius = self.diameter / 2
         self.stationJPose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.middleStatorPose = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -61,17 +55,13 @@ class MyRobot(urx.Robot):
             self.movel(pose, acc=self.acc / 2, vel=self.vel)
 
         # Move LIDAR to center of motor
-        #        for i in range(1):
         delta_x, delta_y = self.mylidar.find_middle()
         pose[0] += delta_x
         pose[1] += delta_y  #
         self.movel(pose, acc=self.acc, vel=self.vel)
         print("Delta X = ", delta_x)
         print("Delta Y = ", delta_y)
-        #        delta_x, delta_y = self.mylidar.find_middle()
-        #        pose[0] += delta_x
-        #        pose[1] += delta_y#
-        #        self.movel(pose, acc=self.acc, vel=self.vel)
+
 
         # Second measurement with the lidar to check.
         for i in range(2):
@@ -100,45 +90,34 @@ class MyRobot(urx.Robot):
         v = 0.05
         a = 0.03
 
-        # self.movel((0, 0, -0.15, 0, 0, 0), acc=a, vel=v, relative=True)
-        # Hardcoded poses of the station
-        #    stationPose = [-0.161,  0.153,  0.912,  1.027,  1.392, -1.026]
         stationJPose = [1.9059884629302861, -1.1397081872494461, -2.0799622606546024, -1.4943256110586116,
                         1.5710074217261376, -1.234022953675229]  # starting J pose
         grabTapePose = [0.065, 0.455, 0.221, 2.222, 2.219, 0]  # Grabbing pose y stond op 445
         forwardTapePose = [0.065, 0.457, 0.082, 2.222, 2.219, 0]  # move forward and flatten 0.062 old [0.065, 0.455, 0.082, 2.222, 2.219, -0.001]
 
         # Movements
-        # self.move_to_middle() # Go to middle of motor at start and end
+
         self.movel(self.middlePose, acc=a, vel=v * 2)  # LPose middle down
         self.movej(stationJPose, acc=a, vel=v * 4)  # JPose near the station
         self.set_digital_out(gripper_pin, False)  # Gripper closed
 
         self.movel(grabTapePose, acc=a, vel=v)  # Go to grab tape
-        #time.sleep(2)  # Remove when gripper connected
-        #    closeGripper()
+
         self.set_digital_out(gripper_pin, True)  # Gripper closed
-        #time.sleep(2)  # Remove when gripper connected
+
 
         self.movel(forwardTapePose, acc=a, vel=v)  # Pull tapeforward
-        self.set_digital_out(hold_tape_pin, True)  # Hold tape pneuma
-        #        Closepusher
+        self.set_digital_out(hold_tape_pin, True)  # Hold tape with cyllinder
+
 
 
         self.movel([forwardTapePose[0] + .004, forwardTapePose[1], forwardTapePose[2] - 0.005, forwardTapePose[3],
                     forwardTapePose[4], forwardTapePose[5]], acc=a, vel=v)
-        # self.translate_tool((0, 0, 0.005), acc=a, vel=v) #move forward for
-        #t = self.get_pose()
-        #t.orient.rotate_yt(np.deg2rad(2))
-        #t.orient.rotate_zt(np.deg2rad(-2))
-        #self.set_pose(t, acc=self.acc, vel=self.vel)
+
         self.set_digital_out(servo_pin, True)  # Close servo
         time.sleep(1)
-        #t = self.get_pose()
-        #t.orient.rotate_yt(np.deg2rad(-2))
-        #t.orient.rotate_zt(np.deg2rad(2))
-        #self.set_pose(t, acc=self.acc, vel=self.vel)
-        forwardTapePose[0] -= 0.1  # dont know check!
+
+        forwardTapePose[0] -= 0.1
         self.movel(forwardTapePose, acc=a, vel=v)
 
 
@@ -151,17 +130,17 @@ class MyRobot(urx.Robot):
 
     def move_to_middle(self):
         print("Going to middle")
-        # Simple function to go to middle of rotor everytime
-        #        self.movej(middleStatorJPose, acc=self.acc, vel=self.vel * 2)
+
         self.movel(self.middleStatorPose, acc=self.acc, vel=self.vel)
 
     def tape_movement(self, i):
+        #move in front of two vanes, scans every third iteration and tapes in between vanes
         gripper_pin = 0
         servo_pin = 1
         # Taping movement
         print("Tape movement!")
         d_horizontal = 0.155  # 0.14 #Forward distance
-        d_vertical = 0.013 # Pushing down distance
+        d_vertical = 0.013 + 0.0025# Pushing down distance
         ogvAngle = np.deg2rad(10)  # Horizontal angle of the OGV's
         if not i % 3:
             #             #Get correction distances from LIDAR
@@ -207,14 +186,11 @@ class MyRobot(urx.Robot):
         self.set_pose(t, acc=self.acc, vel=self.vel)
         self.translate_tool((-rotateDistance, 0, -.05), acc=self.acc, vel=self.vel)
 
-        # Commented due to bugfixing
-        # self.mylidar.disconnect()
         print("Tape movement done! \n")
 
     def demo(self, thread_queue=None):
+        #scans every iteration and doesn't go to tape station
         print("Demo mode started!")
-        # Commented due to bugfixing
-        # self.mylidar.disconnect()
 
         v = 0.1
         a = 0.1
@@ -252,14 +228,11 @@ class MyRobot(urx.Robot):
     def run(self, thread_queue=None):
         # Configure Robot
         logging.basicConfig(level=logging.WARN)
-        #   rob = urx.Robot("192.168.1.102", True)
-        #   self.mylidar.disconnect()
         time.sleep(1)
         v = 0.2
         a = 0.1
         invert = False
 
-        # middleStatorPose = self.getl()
         self.on_startup()  # Joint move in middle of joint limits UR10
         self.calibrate_to_center()  # Get center with LIDAR
 
@@ -298,7 +271,7 @@ class MyRobot(urx.Robot):
                 self.movel(pose, acc=a, vel=v)
                 self.tape_movement(i - 2)
             self.movel(self.middleStatorPose, acc=a, vel=v)
-        #'''
+
         finally:
             print("Program finished!")
             self.close()

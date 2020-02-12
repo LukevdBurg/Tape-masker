@@ -13,19 +13,19 @@ class MyRPLidar(RPLidar):
         self.port = port
 
     def scanner(self):
+        #this function does a simple scan and returns all data
         scan = []
-        #print("Scanning")
         iterator = self.iter_scans()
         for i in range(0, 10):
             scan += next(iterator)
-        #print("Scan done")
+
         self.stop()
         self.stop_motor()
-        # Commented due to bug fixing
-        # lidar.disconnect()
+
         return scan
 
     def find_circle(self):
+        #this function looks for the circle/fan casing in general and returns true if it's in
         measurements = np.array(self.scanner())
         distances = measurements[:, 2]
         mean_distance = np.mean(distances)
@@ -37,6 +37,7 @@ class MyRPLidar(RPLidar):
             return False
 
     def find_middle(self):
+        #this function finds the middle of the fan casing
         measurements = np.array(self.scanner())
         angles = measurements[:, 1]
         distances = measurements[:, 2]
@@ -52,6 +53,8 @@ class MyRPLidar(RPLidar):
         return xdist, zdist
 
     def find_middle_offsets(self):
+        #this function finds the middle using top, bottom, left and right side
+        #because the test setup wasn't a good cirlce, the program wasn't consistent without this function
         measurements = np.array(self.scanner())
         west_points = []
         north_points = []
@@ -79,8 +82,8 @@ class MyRPLidar(RPLidar):
     def find_exact_vanes(self, lower_angle_L, lower_angle_R, upper_angle_L, upper_angle_R, lower_distance_L,
                          lower_distance_R,
                          upper_distance_L, upper_distance_R):
-        # Removed due to bugfixing
-        # mylidar = RPLidar("COM3", baudrate=115200)
+        #this funtion searches for more points of the vanes it found in find_vanes
+        #this makes the outcome more consistent
         mylidar_scan = []
         total_average_left_vane = []
         total_average_right_vane = []
@@ -135,13 +138,12 @@ class MyRPLidar(RPLidar):
         print("totaal rechts:", grand_total_right)
         print("totaal hoek links:", grand_total_left_angle)
         print("totaal hoek rechts:", grand_total_right_angle)
-        # Iter_scans function already uses a stop command
-        # self.stop()
+
         self.stop_motor()
-        # mylidar.disconnect()
         return grand_total_left, grand_total_right, grand_total_left_angle, grand_total_right_angle
 
     def find_vanes(self):
+        #this function finds the two nearest vanes, sends the points to find_exact_vanes and returns the distance to the vanes
         scan = self.scanner()
         #print("Scanned")
         vane = []
@@ -189,5 +191,4 @@ class MyRPLidar(RPLidar):
         x_distance_to_center = (x_distance_from_left_vane + x_distance_from_right_vane) / 2
         return x_distance_to_center / 1000, mean_z_distance / 1000
 
-# lidar = MyRPLidar('COM3')
-# lidar.find_middle()
+
