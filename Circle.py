@@ -275,3 +275,9 @@ class MyRobot(urx.Robot):
         finally:
             print("Program finished!")
             self.close()
+
+
+
+myrobot = MyRobot("192.168.1.102", 'COM3')
+#myrobot.demo() #runs demo program
+myrobot.run() #runs normal program

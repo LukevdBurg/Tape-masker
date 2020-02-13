@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="35e77405-a62e-419a-b34c-6f698c1e4a02" name="Default Changelist" comment="">
+    <list default="true" id="35e77405-a62e-419a-b34c-6f698c1e4a02" name="Default Changelist" comment="no need for gui anu">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Circle.py" beforeDir="false" afterPath="$PROJECT_DIR$/Circle.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lidar_circle.py" beforeDir="false" afterPath="$PROJECT_DIR$/lidar_circle.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,23 +25,23 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="1551" />
-          <entry key="txt" value="161" />
+          <entry key="py" value="1638" />
+          <entry key="txt" value="237" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="PLAIN_TEXT" value="161" />
-          <entry key="Python" value="1551" />
+          <entry key="PLAIN_TEXT" value="237" />
+          <entry key="Python" value="1638" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="10" />
+          <entry key="project.closed" value="11" />
           <entry key="project.open.time.5" value="2" />
-          <entry key="project.open.time.6" value="6" />
+          <entry key="project.open.time.6" value="7" />
           <entry key="project.open.time.7" value="2" />
-          <entry key="project.opened" value="10" />
+          <entry key="project.opened" value="11" />
         </counts>
       </usages-collector>
     </session>
@@ -52,11 +51,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Circle.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3349">
-              <caret line="197" column="61" selection-start-line="197" selection-start-column="61" selection-end-line="197" selection-end-column="61" />
-              <folding>
-                <element signature="e#90#104#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="460">
+              <caret line="281" column="1" selection-start-line="281" selection-start-column="1" selection-end-line="281" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -64,8 +60,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/GUI-Resize.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="232" column="22" selection-start-line="232" selection-start-column="22" selection-end-line="232" selection-end-column="22" />
+            <state relative-caret-position="-85">
+              <caret line="169" column="21" selection-start-line="169" selection-start-column="21" selection-end-line="169" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#12#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -73,7 +72,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lidar_circle.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2465">
+            <state relative-caret-position="2448">
               <caret line="145" column="126" selection-start-line="145" selection-start-column="126" selection-end-line="145" selection-end-column="126" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -467,7 +466,14 @@
       <option name="project" value="LOCAL" />
       <updated>1580384016571</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="cleaned up commented code and added comments for marco">
+      <created>1581504094766</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1581504094767</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -533,7 +539,8 @@
     <MESSAGE value="Frits says it's working" />
     <MESSAGE value="Hopefully last tweaking" />
     <MESSAGE value="everything is working." />
-    <option name="LAST_COMMIT_MESSAGE" value="everything is working." />
+    <MESSAGE value="cleaned up commented code and added comments for marco" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleaned up commented code and added comments for marco" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python37/Lib/site-packages/rplidar.py">
@@ -562,16 +569,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/GUI-Resize.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="232" column="22" selection-start-line="232" selection-start-column="22" selection-end-line="232" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lidar_circle.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2465">
+        <state relative-caret-position="2448">
           <caret line="145" column="126" selection-start-line="145" selection-start-column="126" selection-end-line="145" selection-end-column="126" />
           <folding>
             <element signature="e#0#18#0" expanded="true" />
@@ -579,13 +579,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/GUI-Resize.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-85">
+          <caret line="169" column="21" selection-start-line="169" selection-start-column="21" selection-end-line="169" selection-end-column="21" />
+          <folding>
+            <element signature="e#0#12#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Circle.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3349">
-          <caret line="197" column="61" selection-start-line="197" selection-start-column="61" selection-end-line="197" selection-end-column="61" />
-          <folding>
-            <element signature="e#90#104#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="460">
+          <caret line="281" column="1" selection-start-line="281" selection-start-column="1" selection-end-line="281" selection-end-column="1" />
         </state>
       </provider>
     </entry>
